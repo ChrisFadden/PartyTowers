@@ -225,7 +225,8 @@ int main() {
                     attacked = e;
                 }
             }  // end of enemy loop
-            attacked->setHealth(attacked->getHealth() - t->getPower());
+            if(attacked)
+                attacked->setHealth(attacked->getHealth() - t->getPower());
         }  // end of tower loop
 
         // Drawing code
