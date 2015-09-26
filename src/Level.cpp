@@ -4,7 +4,7 @@
 
 #include "Path.h"
 
-Level::Level(int h, int w) {
+Level::Level(int w, int h) {
   height = h;
   width = w;
 }
@@ -13,13 +13,13 @@ Level::~Level() {}
 
 void Level::addGameObject(GameObject* gobj) {
 
-    std::cout << "addGameObject called\n";
+    //std::cout << "addGameObject called\n";
     int x = gobj->getX();
     int y = gobj->getY();
 
     // Is object within map? May need to change values.
     if (x > width || y > height || x < 0 || y < 0) {
-        std::cout << "FAILED WITHIN MAP CHECK!!!\n";
+        std::cout << "Object not within the map.\n";
         std::cout << x << " " << y << "\n";
         return;
     }
@@ -27,7 +27,7 @@ void Level::addGameObject(GameObject* gobj) {
     std::pair<int, int> gobj_pos(x, y);
 
     if (occupied_tiles.find(gobj_pos) == occupied_tiles.end()) {
-        std::cout << "Position is open!!!!!!!!!!!!!!\n";
+        //std::cout << "Position is open!!!!!!!!!!!!!!\n";
         occupied_tiles.insert(gobj_pos);
         drawables.insert(gobj);
     } else {
@@ -73,8 +73,8 @@ void Level::moveGameObject(GameObject* gobj, int addX, int addY) {
   // Is object out of bounds
   if (x > width || y > height || x < 0 || y < 0) {
     removeGameObject(gobj);
-    std::cout << "Incremented index out of bounds...  Destroyed Object"
-              << std::endl;
+    //std::cout << "Incremented index out of bounds...  Destroyed Object"
+    //          << std::endl;
     return;
   }
 
@@ -88,12 +88,12 @@ void Level::moveCursor(Cursor* c, int dx, int dy) {
     int y = c->getY();
     
     //If out of bounds, don't move cursor
-    if (x+dx > width || y+dy > height) {
-        std::cout << "OUT OF BOUNDS!!!\n";
+    if (x+dx >= width || y+dy >= height || x+dx < 0 || y+dy < 0) {
+        //std::cout << "OUT OF BOUNDS!!!\n";
         return;
     }
 
-    std::cout << "new pos: " << x+dx << " " << y+dy << "\n";
+    //std::cout << "new pos: " << x+dx << " " << y+dy << "\n";
 
     c->setX(x+dx);
     c->setY(y+dy);
