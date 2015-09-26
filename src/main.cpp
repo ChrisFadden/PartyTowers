@@ -321,7 +321,6 @@ int main() {
         SDL_RenderClear(renderer);
 
         //test font
-        drawString("Hello Font World!!",96,18);
         SDL_Rect txr;
         // img size
         txr.w = 32;
@@ -375,20 +374,30 @@ int main() {
 
         txr.w = 16;
         txr.h = 16;
-        vector<int> toRemove2;
+        vector<int> toRemoveBullets;
         int bCount = -1;
         for (auto it : listBullet) {
             bCount += 1;
             Bullet* b = it;
+            if (b->getDead()) {
+                toRemoveBullets.push_back(bCount);
+                continue;
+            }
             if (b->move()) {
                 Enemy* attacked = b->getTarget();
                 attacked->setHealth(attacked->getHealth() - b->getPower());
                 b -> getSource()->addMoney(5);
-                if (attacked->getHealth() <= 0) {
+                if (attacked->getHealth() <= 0 && attacked->getAlive()) {
+                    cout << "BAM! Gotem!\n";
                     b->getSource()->addMoney(attacked->getMoney());
                     attacked->setAlive(false);
+                    for (auto ee : listBullet) {
+                        if (ee->getTarget() == b->getTarget()) {
+                            ee->setDead(true);
+                        }
+                    }
                 }
-                toRemove2.push_back(bCount);
+                toRemoveBullets.push_back(bCount);
                 MsgStruct* p = newPacket(5);
                 p->write(to_string(b->getSource()->getMoney()));
                 send(p, b->getSource()->getPlayerID());            
@@ -416,14 +425,19 @@ int main() {
             txr.y = player_pos.second;
             SDL_Texture* t = p->getTexture();
             SDL_RenderCopy(renderer, t, NULL, &txr);
+            drawString(p->getName(),txr.x + 48, txr.y);
         }
 
+        std::sort (toRemove.begin(), toRemove.end(), std::greater<int>());  
         for (auto i : toRemove) {
             delete(listEnemy.at(i));
             listEnemy.erase(listEnemy.begin() + i);
         }
 
-        for (auto i: toRemove2) {
+        
+        std::sort (toRemoveBullets.begin(), toRemoveBullets.end(), std::greater<int>());  
+
+        for (auto i: toRemoveBullets) {
             delete(listBullet.at(i));
             listBullet.erase(listBullet.begin() + i);
         }

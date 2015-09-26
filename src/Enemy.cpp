@@ -18,6 +18,7 @@ void Enemy::setAlive(bool IsAlive) { isAlive = IsAlive; }
 bool Enemy::getAlive() { return isAlive; }
 
 void Enemy::setMoney(int Money) { money = Money;}
+
 int Enemy::getMoney() {
     return money;
 }

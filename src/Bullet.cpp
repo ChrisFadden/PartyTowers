@@ -10,6 +10,15 @@ Bullet::Bullet(Player* source, Enemy* target, int power) {
     this->source = source;
     this->target = target;
     this->power = power;
+    dead = false;
+}
+
+bool Bullet::getDead() {
+    return dead;
+}
+
+void Bullet::setDead(bool d) {
+    dead = d;
 }
 
 Player* Bullet::getSource() {
@@ -25,6 +34,9 @@ Enemy* Bullet::getTarget() {
 }
 
 bool Bullet::move() {
+    if (target == nullptr) {
+        return true;
+    }
     pair<int,int> targ = target->getPosition();
     if (abs(x - targ.first) < 3 && abs(y - targ.second) < 3) {
         return true;

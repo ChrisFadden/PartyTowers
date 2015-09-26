@@ -13,6 +13,8 @@ class Bullet : public GameObject {
         void setPosition(int, int);
         void setPosition(pair<int, int>);
         int getPower();
+        bool getDead();
+        void setDead(bool);
         Enemy* getTarget();
         Player* getSource();
         void loadImg(SDL_Renderer* r);
@@ -21,6 +23,7 @@ class Bullet : public GameObject {
     private:
         int power;
         Enemy* target;
+        bool dead;
         Player* source;
 
 };
