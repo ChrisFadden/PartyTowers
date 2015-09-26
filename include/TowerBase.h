@@ -4,7 +4,7 @@
 
 class TowerBase : public GameObject {
  public:
-  TowerBase(int, bool, int);  // Default Constructor
+  TowerBase(bool, int);  // Default Constructor
 
   void setHealth(int);  // Function for setting enemny health
   int getHealth();  // Function for getting enemy health
@@ -13,7 +13,6 @@ class TowerBase : public GameObject {
   bool getAlive();  // Function for getting enemy life status
 
   void setWave(int);  // Function for setting level of enemy
-  int getWave();  // Function for getting level of enemy
  private:
   int health;
   bool isAlive;
