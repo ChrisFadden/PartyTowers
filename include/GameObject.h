@@ -2,7 +2,7 @@
 #define GAMEOBJECT_H
 
 class GameObject {
-    private:
+    protected:
         int x, y;
     public:
         GameObject();
