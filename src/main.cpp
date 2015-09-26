@@ -64,14 +64,14 @@ int init();
 
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) || SDL_Init(SDL_INIT_AUDIO) == -1) {
-        std::cout << "ERROR, SDL_Init\n";
+        std::cout << "SDL_Init: " << SDLNet_GetError() << "\n";
         return -1;
     }
 
     cout << "SDL2 loaded.\n";
-    
+
     GameSound game_audio;
-    
+
     game_audio.PlaySound("./res/BackgroundMusic.wav"); 
     // The window we'll be rendering to
     SDL_Window* window = NULL;
@@ -79,8 +79,8 @@ int main() {
     SDL_Surface* screenSurface = NULL;
 
     window = SDL_CreateWindow("Party Towers", SDL_WINDOWPOS_UNDEFINED,
-                              SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-                              SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+            SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+            SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
     if(init() == -1) {
         std::cout << "Quitting\n";
@@ -123,12 +123,6 @@ int main() {
     SDL_Renderer* renderer =
         SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
     fontSetRenderer(renderer);
-    printf("This is what happens when Marcus writes a renderer %s\n",
-           SDL_GetError());
-    if (renderer) {
-        cout << "It works!\n";
-    }
-
 
     SDL_Event e;
     bool running = true;
@@ -138,7 +132,7 @@ int main() {
 
     bool confirmed = false;
 
-    
+
     Path* path = new Path();
     path->addDest(0,0);
     path->addDest(32,0);
@@ -165,7 +159,7 @@ int main() {
 
     int enemyRegen = 5 * 60;
     int enemySpawn = 20 * 60;
-   game_audio.PlaySound("./res/Wilhelm.wav"); 
+    game_audio.PlaySound("./res/Wilhelm.wav"); 
     while (running) {
         SDL_UpdateWindowSurface(window);
 
@@ -178,14 +172,12 @@ int main() {
         int ready = SDLNet_CheckSockets(socketSet, 15);
         if (ready > 0 && SDLNet_SocketReady(sock)) {
             int s = SDLNet_TCP_Recv(sock, tempBuffer, 512);
-            cout << "TBuffer: " << tempBuffer << "\n";
             for (int i=0; i<s-2; i++) {
                 buffer[bufferSize + i] = tempBuffer[i+2];
             }
             if (s > 1) {
                 bufferSize += s-2;
             }
-            cout << "Buffer: " << buffer << "\n";
         }
 
         if (canHandleMsg(confirmed)) {
@@ -225,19 +217,34 @@ int main() {
                 Player* player = getPlayerbyID(pID);
                 auto player_pos = player->getPos();
                 if(lvl1.spotOpen(player_pos.first, player_pos.second)) {
-                    std::cout << "Spot" << player_pos.first <<" " <<player_pos.second << "open\n";
+                    //std::cout << "Spot" << player_pos.first <<" " <<player_pos.second << "open\n";
                     p->write("1");
                 } else {
-                    std::cout << "Spot" << player_pos.first <<" " <<player_pos.second << "closed\n";
+                    //std::cout << "Spot" << player_pos.first <<" " <<player_pos.second << "closed\n";
                     p->write("0");
                 }
                 send(p, pID);
             } else if (msgID == 4) {
                 int towerType = packet->readInt();
-                cout << "Placing a tower.\n";
+                //cout << "Placing a tower.\n";
                 // Attempt to place towerType
                 // here
-                addTower(pID, towerType, renderer);
+				if ( towerType == 1) {
+					if ( (getPlayerbyID(pID)->getMoney()) >= 50) {
+                		addTower(pID, towerType, renderer);
+						getPlayerbyID(pID)->addMoney(-50);
+					} else { 
+						return 0;
+					}					
+				} else {
+					if ( (getPlayerbyID(pID)->getMoney()) >= 100) {
+							addTower(pID, towerType, renderer);
+							getPlayerbyID(pID)->addMoney(-100);
+					} else {
+						return 0;
+					}
+				}
+
 
                 MsgStruct* p = newPacket(4);
                 // Write success
@@ -247,6 +254,9 @@ int main() {
                 MsgStruct* p2 = newPacket(5);
                 p2->write(to_string(getPlayerbyID(pID)->getMoney()));
                 send(p2, pID);
+            } else if (msgID == 10) {
+                string name = packet->read();
+                getPlayerbyID(pID)->setName(name);
             }
         }
 
@@ -259,7 +269,7 @@ int main() {
         }
 
         if (enemySpawn < 0) {
-            cout << "New enemy\n";
+            //cout << "New enemy\n";
             Soldier* soldier = new Soldier(1, 0, 0);
             soldier->loadImg(renderer);
             listEnemy.push_back(soldier);
@@ -287,16 +297,16 @@ int main() {
                 auto tpair = t->getPosition();
                 auto epair = e->getPosition();
                 radius = sqrt((epair.first - tpair.first) *
-                                  (epair.first - tpair.first) +
-                              (epair.second - tpair.second) *
-                                  (epair.second - tpair.second));
+                        (epair.first - tpair.first) +
+                        (epair.second - tpair.second) *
+                        (epair.second - tpair.second));
                 if(radius < r && radius < radiusAttacked) {
                     radiusAttacked = radius;
                     attacked = e;
                 }
             }  // end of enemy loop
             if (attacked) {
-                cout << "Hit the enemy!\n";
+                //cout << "Hit the enemy!\n";
                 Bullet* bullet = new Bullet(t->getPlayer(), attacked, t->getPower());
                 bullet->setPosition(t->getPosition());
                 bullet->loadImg(renderer);
@@ -317,7 +327,7 @@ int main() {
         txr.h = 32;
         // For each path item, draw
         // For each base tower, draw
-        
+
         for (auto it : listFloors) {
             GameObject* f = it;
             pair<int, int> floor_pos = f->getPosition();
@@ -325,7 +335,7 @@ int main() {
             txr.y = floor_pos.second;
             SDL_Texture* tx = f->draw();
             if(!tx) {
-                std::cout << "ERROR, tx is NULL!!!";
+                std::cout << "Error, tx is NULL";
             }
             SDL_RenderCopy(renderer, tx, NULL, &txr);
         }
@@ -337,13 +347,13 @@ int main() {
             txr.y = tower_pos.second;
             SDL_Texture* tx = t->draw();
             if(!tx) {
-                std::cout << "ERROR, tx is NULL!!!";
+                std::cout << "Error, tx is NULL";
             }
             SDL_RenderCopy(renderer, tx, NULL, &txr);
         }
 
         vector<int> toRemove;
-        
+
         int tCount = -1;
         for (auto e : listEnemy) {
             tCount += 1;
@@ -357,7 +367,7 @@ int main() {
             txr.y = e_pos.second;
             SDL_Texture* tx = e->draw();
             if (!tx) {
-                cout << "Error, tx is NULL!";
+                cout << "Error, tx is NULL";
             }
             SDL_RenderCopy(renderer, tx, NULL, &txr);
         }
@@ -372,7 +382,7 @@ int main() {
             if (b->move()) {
                 Enemy* attacked = b->getTarget();
                 attacked->setHealth(attacked->getHealth() - b->getPower());
-                b -> getSource()->addMoney(10);
+                b -> getSource()->addMoney(5);
                 if (attacked->getHealth() <= 0) {
                     b->getSource()->addMoney(attacked->getMoney());
                     attacked->setAlive(false);
@@ -389,14 +399,14 @@ int main() {
             txr.y = bullet_pos.second;
             SDL_Texture* tx = b->draw();
             if(!tx) {
-                std::cout << "ERROR, tx is NULL!!!";
+                std::cout << "Error, tx is NULL";
             }
             SDL_RenderCopy(renderer, tx, NULL, &txr);
         }
 
         txr.w = 32;
         txr.h = 32;
-        
+
         // For each player, get cursor, draw
         for (auto it : listPlayers) {
             Player* p = it.second;
@@ -477,6 +487,9 @@ void setupMessages() {
 
     MsgStruct* o5 = createMsgStruct(5, true);
     o5->addString();
+
+    MsgStruct* m10 = createMsgStruct(10, false);
+    m10->addString();
 }
 
 bool canHandleMsg(bool confirmed) {
@@ -561,7 +574,7 @@ Player* getPlayerbyID(int id) {
 void addPlayerbyID(int id, SDL_Renderer* r) {
     auto it = listPlayers.find(id);
     if (it == listPlayers.end()) {
-        Player* p = new Player(id, 0, 0, &lvl1);
+        Player* p = new Player(id, 0, 100, &lvl1);
         p->loadImg(r);
         listPlayers.emplace(id, p);
     }
@@ -580,19 +593,19 @@ void addTower(int id, int type, SDL_Renderer* r) {
     Tower* t;
     std::cout << type << "\n";
     if(type == 1) {
-        std::cout << "MAKING A CANNON!!\n";
+        //std::cout << "MAKING A CANNON!!\n";
         Cannon* cannon = new Cannon(x,y,1);
         cannon->loadImg(r);
         t = cannon;
     } else {
-        std::cout << "MAKING A ROCKET!!\n";
+        //std::cout << "MAKING A ROCKET!!\n";
         Rocket* rocket = new Rocket(x,y,1);
         rocket->loadImg(r);
         t = rocket;
     }
-    
+
     if(!lvl1.spotOpen(x, y)) {
-        std::cout << "Position wasn't open!\n";
+        //std::cout << "Position wasn't open!\n";
         delete t;
         return;
     }
@@ -604,12 +617,12 @@ void addTower(int id, int type, SDL_Renderer* r) {
 int init() {
     int flag = IMG_INIT_PNG;
     if ((IMG_Init(flag) & flag) != flag) {
-        std::cout << "Error, SDL_image!\n";
+        std::cout << "Error, SDL_image" << "\n";
         return -1;
     }
 
     if (SDLNet_Init() == -1) {
-        std::cout << "ERROR, SDLNet_Init\n";
+        std::cout << "Error, SDLNet_Init\n";
         return -1;
     }
 

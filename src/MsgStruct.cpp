@@ -35,7 +35,7 @@ int MsgStruct::getPID() {
 }
 
 bool MsgStruct::canHandle(string dat) {
-    cout << "Parsing data " << dat << "\n";
+    //cout << "Parsing data " << dat << "\n";
     int part = 1;
     int ind = 3;
     while (part <= numParts) {
@@ -56,7 +56,7 @@ bool MsgStruct::canHandle(string dat) {
         }
         part += 1;
     }
-    cout << "We can handle it!\n";
+    //cout << "We can handle it!\n";
     return true;
 }
 

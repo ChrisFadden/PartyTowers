@@ -13,6 +13,7 @@ class Player {
   int playerID;
   int score;
   int money;
+  string name;
   Cursor* cursor;
   Level* lvl;
 
@@ -23,7 +24,9 @@ class Player {
   int getScore();  // Function to get score
   void setMoney(int);  // Function to set money
   int getMoney();  // Function to get money
-  void addMoney(int); 
+  void addMoney(int);
+  void setName(string);
+  string getName(); 
   //User input  
   void moveUp();
   void moveDown();
