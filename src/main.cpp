@@ -58,8 +58,6 @@ int main() {
             SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
             SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
-    screenSurface = SDL_GetWindowSurface(window);
-
     int flag = IMG_INIT_PNG;
     if ((IMG_Init(flag)&flag) != flag) {
         std::cout << "Error, SDL_image!\n";
@@ -105,14 +103,10 @@ int main() {
 
     //Create Renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-
+    printf("This is what happens when Marcus writes a renderer %s\n",SDL_GetError());
     if (renderer) {
         cout << "it works!\n";
     }
-
-    SDL_FillRect(screenSurface, NULL,
-            SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-
 
     //Testing Images
     Player p1(0, 0, 0, nullptr);
