@@ -70,8 +70,11 @@ void Level::moveCursor(Cursor* c, int dx, int dy) {
     
     //If out of bounds, don't move cursor
     if (x+dx > width || y+dy > height) {
+        std::cout << "OUT OF BOUNDS!!!\n";
         return;
     }
+
+    std::cout << "new pos: " << x+dx << " " << y+dy << "\n";
 
     c->setX(x+dx);
     c->setY(y+dy);

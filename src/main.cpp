@@ -35,12 +35,13 @@ string roomCode;
 
 vector<GameObject*> listObj;
 unordered_map<int,Player*> listPlayers;
+Level lvl1(640, 480);
 
 
 
 //User IO functions to be called from networking code?
 Player* getPlayerbyID(int id);
-void addPlayerbyID(int id);
+void addPlayerbyID(int id, SDL_Renderer* r);
 
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
@@ -110,7 +111,7 @@ int main() {
     }
 
     //Testing Images
-    Player p1(0, 0, 0, nullptr);
+    Player p1(0, 0, 0, &lvl1);
     p1.loadImg(renderer);
     listPlayers.emplace(0,&p1);
     GameObject go1;
@@ -166,10 +167,25 @@ int main() {
                 cout << "Room code: "+roomCode+"\n"; 
             } else if (msgID == 998) {
                 cout << "New player!\n";
+                addPlayerbyID(pID, renderer);
             } else if (msgID == 2) {
                 string dir = packet->read();
                 // We have pID and dir
                 // dir is l, r, u, or d
+                Player* p = getPlayerbyID(pID);
+                if(dir == "l") {
+                    cout << "LEFT!!!\n";
+                    p->moveLeft();
+                } else if (dir == "r") {
+                    cout << "RIGHT!!!\n";
+                    p->moveRight();
+                } else if (dir == "u") {
+                    p->moveUp();
+                } else if (dir == "d") {
+                    p->moveDown();
+                } else {
+                    cout << "error, direction: " << dir << "\n";
+                }
             }
         }
 
@@ -198,6 +214,8 @@ int main() {
         for(auto it : listPlayers) {
             Player* p = it.second;
             pair<int,int>player_pos = p->getPos();
+            txr.x = player_pos.first;
+            txr.y = player_pos.second;
             SDL_Texture* t = p->getTexture();
             SDL_RenderCopy(renderer, t, NULL, &txr);
         }
@@ -296,9 +314,11 @@ Player* getPlayerbyID(int id) {
     return nullptr;
 }
 
-void addPlayerbyID(int id) {
+void addPlayerbyID(int id, SDL_Renderer* r) {
     auto it = listPlayers.find(id);
     if(it == listPlayers.end()) {
-        listPlayers.emplace(id, new Player(id, 0, 0, nullptr));
+        Player* p = new Player(id, 0, 0, &lvl1);
+        p->loadImg(r);
+        listPlayers.emplace(id, p);
     }
 }
