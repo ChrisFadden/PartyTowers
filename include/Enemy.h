@@ -1,6 +1,7 @@
 #ifndef _ENEMY_H
 #define _ENEMY_H
 #include "GameObject.h"
+#include "Path.h"
 #include <utility>
 class Enemy : public GameObject {
  public:
@@ -15,7 +16,11 @@ class Enemy : public GameObject {
   bool getAlive();  // Function for getting enemy life status
 	
   void setPosition(int, int);
+  void setPosition(std::pair<int, int>);
   std::pair<int, int> getPosition();
+
+  bool move();
+  void setPath(Path*);
 
   int wave;
 
@@ -25,5 +30,7 @@ class Enemy : public GameObject {
   int speed;
   int health;
   bool isAlive;
+  Path* path;
+  int pathInd;
 };
 #endif

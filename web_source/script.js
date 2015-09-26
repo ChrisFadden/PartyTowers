@@ -64,12 +64,7 @@ function startConnection() {
         packet.write($("#room").val());
         // and then we send the packet!
         packet.send();
-        $("#login").hide();
-        $("#room").hide();
-
-        $("#notify").text("Connected!");
-        $("#game").show();
-        $("#towers").hide();
+        
     }
 
     // This will be called when the connection is closed
@@ -112,10 +107,17 @@ function startConnection() {
 
     // Start the connection!
     $("#notify").text("Connecting...");
-    wsconnect("ws://localhost:8886", onopen, onclose);
+    wsconnect("ws://128.61.27.41:8886", onopen, onclose);
+    //wsconnect("ws://localhost:8886", onopen, onclose);
 }
 
 function begin() {
+    $("#login").hide();
+    $("#room").hide();
+
+    $("#notify").text("Connected!");
+    $("#game").show();
+    $("#towers").hide();
 }
 
 // This function handles incoming packets
@@ -136,6 +138,7 @@ function handleNetwork() {
     if (msgID === MSG_LOGIN) {
         var pid = packet.read();
         $("#notify").text("You are client number " + pid);
+        begin();
     } else if (msgID === 3) {
         var t = packet.read();
         if (t == "1") {

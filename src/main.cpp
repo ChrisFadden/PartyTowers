@@ -12,6 +12,8 @@
 #include "Tower.h"
 #include "Cannon.h"
 #include "Rocket.h"
+#include "Path.h"
+#include "Soldier.h"
 #include <unordered_map>
 
 using namespace std;
@@ -129,6 +131,17 @@ int main() {
 
     bool confirmed = false;
 
+    Soldier* soldier = new Soldier(1, 0, 0);
+    soldier->loadImg(renderer);
+    listEnemy.push_back(soldier);
+
+    Path* path = new Path();
+    path->addDest(0,0);
+    path->addDest(128,0);
+    path->addDest(128,128);
+
+    soldier->setPath(path);
+
     while (running) {
         SDL_UpdateWindowSurface(window);
 
@@ -208,10 +221,11 @@ int main() {
             // cout << "\n";
         }
 
+
         /***************
          * Aiming Code
          **************/
-        Enemy* attacked;
+        Enemy* attacked = nullptr;
         int r, radius;
         int radiusAttacked = 10000;
         for (auto t : listTower) {
@@ -229,9 +243,12 @@ int main() {
                     attacked = e;
                 }
             }  // end of enemy loop
-            if(attacked)
+            if (attacked) {
+                cout << "Hit the enemy!\n";
                 attacked->setHealth(attacked->getHealth() - t->getPower());
+            }
         }  // end of tower loop
+
 
         // Drawing code
         SDL_RenderClear(renderer);
@@ -261,6 +278,18 @@ int main() {
             txr.y = player_pos.second;
             SDL_Texture* t = p->getTexture();
             SDL_RenderCopy(renderer, t, NULL, &txr);
+        }
+
+        for (auto e : listEnemy) {
+            e->move();
+            pair<int, int> e_pos = e->getPosition();
+            txr.x = e_pos.first;
+            txr.y = e_pos.second;
+            SDL_Texture* tx = e->draw();
+            if (!tx) {
+                cout << "Error, tx is NULL!";
+            }
+            SDL_RenderCopy(renderer, tx, NULL, &txr);
         }
 
         // SDL_RenderCopy(renderer, t, NULL, &txr);

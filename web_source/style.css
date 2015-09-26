@@ -74,6 +74,10 @@ ul {
     padding-top: 16px;
 }
 
+.arrowBtn:active {
+    background-color: #35b;
+}
+
 #upBtn {
     position: absolute;
     left: 160px;
@@ -153,6 +157,10 @@ button {
     color: black;
     border-radius: 12px;
     font-size: 16pt;
+}
+
+button:active {
+    background-color: #56c;
 }
 
 #myHostCode {

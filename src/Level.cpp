@@ -2,6 +2,8 @@
 #include <utility>
 #include <iostream>
 
+#include "Path.h"
+
 Level::Level(int h, int w) {
   height = h;
   width = w;

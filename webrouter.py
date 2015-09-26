@@ -32,6 +32,8 @@ class Client:
                 if self.host:
                     print("Found host.")
                     self.confirm()
+                else:
+                    print("No host found.")
         else:
             if self.host.socket:
                 self.host.socket.send(self.sID + data)
