@@ -23,7 +23,7 @@ class Player {
   int getScore();  // Function to get score
   void setMoney(int);  // Function to set money
   int getMoney();  // Function to get money
-  
+  void addMoney(int); 
   //User input  
   void moveUp();
   void moveDown();

@@ -19,6 +19,8 @@ class Enemy : public GameObject {
   void setPosition(std::pair<int, int>);
   std::pair<int, int> getPosition();
 
+  int getMoney();
+
   bool move();
   void setPath(Path*);
 
@@ -28,6 +30,7 @@ class Enemy : public GameObject {
   int x;
   int y;
   int speed;
+  int money;
   int health;
   bool isAlive;
   Path* path;

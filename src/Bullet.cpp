@@ -1,13 +1,19 @@
 #include <iostream>
 #include <stdlib.h>
 #include "Bullet.h"
+#include "Player.h"
 #include "Enemy.h"
 
 using namespace std;
 
-Bullet::Bullet(Enemy* target, int power) {
+Bullet::Bullet(Player* source, Enemy* target, int power) {
+    this->source = source;
     this->target = target;
     this->power = power;
+}
+
+Player* Bullet::getSource() {
+    return source;
 }
 
 int Bullet::getPower() {

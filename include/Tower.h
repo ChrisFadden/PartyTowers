@@ -37,6 +37,7 @@ class Tower : public GameObject {
   std::pair<int, int> getPosition();
 
   void setPlayer(Player* pin);
+  Player* getPlayer();
 
 
   int level;

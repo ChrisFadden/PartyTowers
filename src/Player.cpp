@@ -16,6 +16,10 @@ int Player::getScore() { return score; }
 
 void Player::setMoney(int Money) { money = Money; }
 
+void Player::addMoney(int dm) {
+    money += dm;
+}
+
 int Player::getMoney() { return money; }
 
 

@@ -29,6 +29,8 @@ bool canHandleMsg(bool);
 MsgStruct* readPacket(bool);
 void drawPath(Path*, SDL_Renderer*);
 
+Player* getPlayerbyID(string);
+
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
 
@@ -36,6 +38,7 @@ SDLNet_SocketSet socketSet;
 TCPsocket sock;
 
 char buffer[512];
+char tempBuffer[512];
 int bufferSize;
 
 map<int, MsgStruct*> outMsgStructs;
@@ -168,10 +171,15 @@ int main() {
 
         int ready = SDLNet_CheckSockets(socketSet, 15);
         if (ready > 0 && SDLNet_SocketReady(sock)) {
-            int s = SDLNet_TCP_Recv(sock, buffer + bufferSize, 512);
-            if (s > 0) {
-                bufferSize += s;
+            int s = SDLNet_TCP_Recv(sock, tempBuffer, 512);
+            cout << "TBuffer: " << tempBuffer << "\n";
+            for (int i=0; i<s-2; i++) {
+                buffer[bufferSize + i] = tempBuffer[i+2];
             }
+            if (s > 1) {
+                bufferSize += s-2;
+            }
+            cout << "Buffer: " << buffer << "\n";
         }
 
         if (canHandleMsg(confirmed)) {
@@ -186,6 +194,10 @@ int main() {
             } else if (msgID == 998) {
                 cout << "New player!\n";
                 addPlayerbyID(pID, renderer);
+                MsgStruct* p2 = newPacket(5);
+                p2->write(to_string(getPlayerbyID(pID)->getMoney()));
+                send(p2, pID);
+
             } else if (msgID == 2) {
                 string dir = packet->read();
                 // We have pID and dir
@@ -225,6 +237,10 @@ int main() {
                 // Write success
                 p->write("1");
                 send(p, pID);
+
+                MsgStruct* p2 = newPacket(5);
+                p2->write(to_string(getPlayerbyID(pID)->getMoney()));
+                send(p2, pID);
             }
         }
 
@@ -275,7 +291,7 @@ int main() {
             }  // end of enemy loop
             if (attacked) {
                 cout << "Hit the enemy!\n";
-                Bullet* bullet = new Bullet(attacked, t->getPower());
+                Bullet* bullet = new Bullet(t->getPlayer(), attacked, t->getPower());
                 bullet->setPosition(t->getPosition());
                 bullet->loadImg(renderer);
                 listBullet.push_back(bullet);
@@ -347,10 +363,16 @@ int main() {
             if (b->move()) {
                 Enemy* attacked = b->getTarget();
                 attacked->setHealth(attacked->getHealth() - b->getPower());
+                b -> getSource()->addMoney(10);
                 if (attacked->getHealth() <= 0) {
+                    b->getSource()->addMoney(attacked->getMoney());
                     attacked->setAlive(false);
                 }
                 toRemove2.push_back(bCount);
+                MsgStruct* p = newPacket(5);
+                p->write(to_string(b->getSource()->getMoney()));
+                send(p, b->getSource()->getPlayerID());            
+
                 continue; 
             }
             pair<int, int> bullet_pos = b->getPosition();
@@ -449,15 +471,15 @@ void setupMessages() {
 }
 
 bool canHandleMsg(bool confirmed) {
-    if (bufferSize < 5) {
+    if (bufferSize < 3) {
         return false;
     }
     string data = string(buffer);
-    if (data.size() < 5) {
+    if (data.size() < 3) {
         return false;
     }
     // cout << "Handling message...\n";
-    int offset = 2;
+    int offset = 0;
     if (confirmed) {
         offset += 2;
     }
@@ -470,14 +492,15 @@ bool canHandleMsg(bool confirmed) {
     if (inMsgStructs.find(msgID) != inMsgStructs.end()) {
         return inMsgStructs[msgID]->canHandle(data);
     }
-    cout << "Message ID does not exist. Raw: " <<  rawMsgID << " Parsed: " << msgID << "\n";
-    cout << "Data is " << buffer << "\n";
+    cout << "Message ID does not exist. Raw: " <<  rawMsgID << " | Parsed: " << msgID << "\n";
+    cout << "Data: " << buffer << "\n";
+    bufferSize = 0;
     return false;
 }
 
 MsgStruct* readPacket(bool confirmed) {
     string data = string(buffer).substr(0, bufferSize);
-    int offset = 2;
+    int offset = 0;
     if (confirmed) {
         offset += 2;
     }
@@ -513,6 +536,10 @@ int send(string data, int pID) {
 }
 
 int send(MsgStruct* packet, int pID) { send(packet->getData(), pID); }
+
+Player* getPlayerbyID(string id) {
+    return getPlayerbyID(atoi(id.c_str()));
+}
 
 Player* getPlayerbyID(int id) {
     auto it = listPlayers.find(id);

@@ -21,6 +21,7 @@ class Client:
         data = self.socket.readRaw()
         if len(data) == 0:
             return
+        print("Data:", data)
         if self.needsConfirmation:
             code = data[3:7]
             if code == "0000":
@@ -82,6 +83,7 @@ class Host:
         self.data += self.socket.readRaw()
         if len(self.data) == 0:
             return
+        print("Host says: "+self.data)
         ind = self.data.find("*")
         if (ind < 0):
             return
@@ -100,7 +102,7 @@ class Host:
                 print("Client's socket is closed.")
         else:
             print("Host", self.hostCode," tried to send a messaged to non-existant player", pID)
-        self.data = self.data[ind+1:]
+        self.data = self.data[ind+2:]
         self.writingTo = 0
         
     def disconnect(self):

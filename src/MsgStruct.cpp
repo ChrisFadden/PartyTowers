@@ -35,6 +35,7 @@ int MsgStruct::getPID() {
 }
 
 bool MsgStruct::canHandle(string dat) {
+    cout << "Parsing data " << dat << "\n";
     int part = 1;
     int ind = 3;
     while (part <= numParts) {
@@ -55,6 +56,7 @@ bool MsgStruct::canHandle(string dat) {
         }
         part += 1;
     }
+    cout << "We can handle it!\n";
     return true;
 }
 
@@ -79,7 +81,7 @@ int MsgStruct::readInt() {
 }
 
 MsgStruct* MsgStruct::fillFromData(bool confirmed) {
-    string dataS = string(buffer).substr(2, bufferSize-2);
+    string dataS = string(buffer).substr(0, bufferSize);
     int part = 1;
     int offset = 3;
     int ind = 3;
@@ -105,11 +107,11 @@ MsgStruct* MsgStruct::fillFromData(bool confirmed) {
     nextPart = 0;
     int count = 0;
     //cout << "Old buffer: " + string(buffer) + "\n";
-    for (int i=ind+2; i<bufferSize; i++) {
+    for (int i=ind; i<bufferSize; i++) {
         buffer[count] = buffer[i];
         count++; 
     }
-    bufferSize -= ind + 2;
+    bufferSize -= ind;
     /*
     cout << "New buffer: " + string(buffer) + "\n";
     cout << "New buffer size: ";

@@ -17,6 +17,10 @@ void Enemy::setAlive(bool IsAlive) { isAlive = IsAlive; }
 
 bool Enemy::getAlive() { return isAlive; }
 
+int Enemy::getMoney() {
+    return 100;
+}
+
 void Enemy::setPosition(int X, int Y) {
 	x = X;
 	y = Y;

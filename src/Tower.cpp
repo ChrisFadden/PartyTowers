@@ -66,5 +66,9 @@ pair<int, int> Tower::getPosition() {
 
 
 void Tower::setPlayer(Player* pin) {
-   p = pin;
+    p = pin;
+}
+
+Player* Tower::getPlayer() {
+    return p;
 }
