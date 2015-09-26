@@ -510,7 +510,8 @@ bool canHandleMsg(bool confirmed) {
         return inMsgStructs[msgID]->canHandle(data);
     }
     cout << "Message ID does not exist. Raw: " <<  rawMsgID << " | Parsed: " << msgID << "\n";
-    cout << "Data: " << buffer << "\n";
+    cout << "Buffer: " << buffer << "\n";
+    cout << "Data: " << data << "\n";
     bufferSize = 0;
     return false;
 }
