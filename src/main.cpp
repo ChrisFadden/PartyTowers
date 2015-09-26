@@ -36,11 +36,12 @@ vector<GameObject*> listObj;
 vector<Player*> listPlayers;
 
 int main() {
-    std::cout << "HELLO PARTY TOWERS!!!!\n";
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
         std::cout << "ERROR, SDL_Init\n";
         return -1;
     }
+
+    cout << "SDL2 loaded.\n";
 
     // The window we'll be rendering to
     SDL_Window* window = NULL;
@@ -64,7 +65,7 @@ int main() {
         return -1;
     }
 
-    std::cout << "WOO SDL2_Net!!!!\n";
+    std::cout << "SDL_net loaded.\n";
 
     IPaddress ip;
 
@@ -77,6 +78,9 @@ int main() {
         fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
     }
 
+    socketSet = SDLNet_AllocSocketSet(1);
+    SDLNet_TCP_AddSocket(socketSet, sock);
+
     setupMessages();
 
     send("TCP");
@@ -85,14 +89,19 @@ int main() {
     while (waiting) {
         if (SDLNet_TCP_Recv(sock, buffer, 512) > 0) {
             waiting = false;
-            cout << buffer;
-            cout << "\n";
+            if (string(buffer) == "1") {
+                cout << "Handshake to server made.\n";
+            }
         }
     }
     send("9990000");
 
     //Create Renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+
+    if (renderer) {
+        cout << "it works!\n";
+    }
 
     SDL_FillRect(screenSurface, NULL,
             SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
@@ -109,6 +118,7 @@ int main() {
     int k = 0;
     Uint32 ctime = SDL_GetTicks();
     int wave = 1;
+
     while (running) {
         SDL_UpdateWindowSurface(window);
 
@@ -189,6 +199,7 @@ bool canHandleMsg() {
     }
     data = data.substr(2);
     string rawMsgID = data.substr(0, 3);
+    //cout << rawMsgID + "\n";
     int msgID = atoi(rawMsgID.c_str());
     if (inMsgStructs.find(msgID) != inMsgStructs.end()) {
         return inMsgStructs[msgID]->canHandle(data);
