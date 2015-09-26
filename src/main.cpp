@@ -16,6 +16,7 @@
 #include "Soldier.h"
 #include "Sound.h"
 #include "Bullet.h"
+#include "Text.h"
 #include <unordered_map>
 
 using namespace std;
@@ -121,6 +122,7 @@ int main() {
     // Create Renderer
     SDL_Renderer* renderer =
         SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    fontSetRenderer(renderer);
 
     SDL_Event e;
     bool running = true;
@@ -317,6 +319,9 @@ int main() {
 
         // Drawing code
         SDL_RenderClear(renderer);
+
+        //test font
+        drawString("Hello Font World!!",96,18);
         SDL_Rect txr;
         // img size
         txr.w = 32;
@@ -622,5 +627,7 @@ int init() {
         std::cout << "Error, SDLNet_Init\n";
         return -1;
     }
+
+    initFont();
     return 0;
 }
