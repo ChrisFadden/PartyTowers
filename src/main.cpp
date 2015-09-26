@@ -16,8 +16,8 @@ int send(string);
 MsgStruct* createMsgStruct(int, bool);
 void setupMessages();
 MsgStruct* newPacket(int);
-bool canHandleMsg();
-MsgStruct* readPacket();
+bool canHandleMsg(bool);
+MsgStruct* readPacket(bool);
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -106,7 +106,7 @@ int main() {
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
     printf("This is what happens when Marcus writes a renderer %s\n",SDL_GetError());
     if (renderer) {
-        cout << "it works!\n";
+        cout << "It works!\n";
     }
 
     //Testing Images
@@ -122,6 +122,8 @@ int main() {
     Uint32 ctime = SDL_GetTicks();
     int wave = 1;
 
+    bool confirmed = false;
+
     while (running) {
         SDL_UpdateWindowSurface(window);
 
@@ -136,30 +138,47 @@ int main() {
             int s = SDLNet_TCP_Recv(sock, buffer+bufferSize, 512);
             if (s > 0) {
                 bufferSize += s;
-                /*
+                /*               
                    cout << "\nData: \n";
                    cout << buffer;
                    cout << "\n"; 
                    */
+                   
             }
         }
 
-        if (canHandleMsg()) {
+        if (canHandleMsg(confirmed)) {
             //cout << "We have a message!\n";
-            MsgStruct* packet = readPacket();
+            MsgStruct* packet = readPacket(confirmed);
+            int pID = packet->getPID();
             int msgID = packet->getMsgID();
+            /*
+            cout << "Player ID: ";
+            cout << packet->getPID();
+            cout << "\n";
+            cout << "Msg ID: ";
+            cout << msgID;
+            cout << "\n";
+            */
             if (msgID == 999) {
+                confirmed = true;
                 roomCode = packet->read();
                 cout << "Room code: "+roomCode+"\n"; 
+            } else if (msgID == 998) {
+                cout << "New player!\n";
+            } else if (msgID == 2) {
+                string dir = packet->read();
+                // We have pID and dir
+                // dir is l, r, u, or d
             }
         }
 
         k +=1 ;
         if (SDL_GetTicks() - ctime > 1000) {
-            cout << k;
+            //cout << k;
             k = 0;
             ctime = SDL_GetTicks();
-            cout << "\n";
+            //cout << "\n";
         }
 
         //Drawing code
@@ -201,9 +220,14 @@ int main() {
 void setupMessages() {
     MsgStruct* m1 = createMsgStruct(999, false);
     m1->addChars(4);
+
+    MsgStruct* m998 = createMsgStruct(998, false);
+
+    MsgStruct* m2 = createMsgStruct(2, false);
+    m2->addChars(1);
 }
 
-bool canHandleMsg() {
+bool canHandleMsg(bool confirmed) {
     if (bufferSize < 5) {
         return false;
     }
@@ -211,21 +235,32 @@ bool canHandleMsg() {
     if (data.size() < 5) {
         return false;
     }
-    data = data.substr(2);
+    //cout << "Handling message...\n";
+    int offset = 2;
+    if (confirmed) {
+        offset += 2;
+    }
+    //cout << data + "\n";
+    data = data.substr(offset);
+    //cout << data + "\n";
     string rawMsgID = data.substr(0, 3);
     //cout << rawMsgID + "\n";
     int msgID = atoi(rawMsgID.c_str());
     if (inMsgStructs.find(msgID) != inMsgStructs.end()) {
         return inMsgStructs[msgID]->canHandle(data);
     }
-    cout << "Message ID does not exist.";
+    cout << "Message ID does not exist " + rawMsgID+ "\n";
     return false;
 }
 
-MsgStruct* readPacket() {
+MsgStruct* readPacket(bool confirmed) {
     string data = string(buffer).substr(0,bufferSize);
-    int msgID = atoi(data.substr(2,3).c_str());
-    return inMsgStructs[msgID]->fillFromData();
+    int offset = 2;
+    if (confirmed) {
+        offset += 2;
+    }
+    int msgID = atoi(data.substr(offset,3).c_str());
+    return inMsgStructs[msgID]->fillFromData(confirmed);
 }
 
 MsgStruct* createMsgStruct(int msgID, bool outgoing) {

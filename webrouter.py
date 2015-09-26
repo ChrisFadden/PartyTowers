@@ -45,10 +45,10 @@ class Client:
     def confirm(self):
         self.pID = self.host.getNextpID()
         self.host.players[self.pID] = self
-        needsConfirmation = False
+        self.needsConfirmation = False
         self.sID = extend(self.pID, 2)
         self.socket.send("999" + self.sID)
-        self.host.socket.send("998" + self.sID)
+        self.host.socket.send(self.sID + "998")
 
     def becomeHost(self):
         host = Host(self.socket, newHostCode())

@@ -19,18 +19,20 @@ class MsgStruct {
         bool canHandle(string);
         string read();
         int readInt();
-        MsgStruct* fillFromData();
+        MsgStruct* fillFromData(bool);
         MsgStruct* write(string);
         bool readyToSend();
         string getData(); 
         MsgStruct* addChars(int);
         MsgStruct* addString();
-        int getMsgID();  
+        int getMsgID();
+        int getPID();  
 
     private:
         int msgID;
         int numParts;
         int nextPart;
+        int pID;
         string data;
         map<int,string> parts;
         map<int,int> sizes; 
