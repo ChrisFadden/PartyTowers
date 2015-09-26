@@ -1,7 +1,3 @@
 #include "Cursor.h"
 
-Cursor::Cursor() {
-    setPos(0,0);
-}
-
-
+Cursor::Cursor() { setPos(0, 0); }

@@ -4,11 +4,8 @@
 #include "GameObject.h"
 
 class Cursor : GameObject {
-    public:
-    Cursor();
-
+ public:
+  Cursor();
 };
-
-
 
 #endif
