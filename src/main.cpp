@@ -14,6 +14,7 @@
 #include "Rocket.h"
 #include "Path.h"
 #include "Soldier.h"
+#include "Sound.h"
 #include "Bullet.h"
 #include <unordered_map>
 
@@ -61,13 +62,16 @@ void addTower(int id, int type, SDL_Renderer* r);
 int init();
 
 int main() {
-    if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+    if (SDL_Init(SDL_INIT_VIDEO) || SDL_Init(SDL_INIT_AUDIO) == -1) {
         std::cout << "ERROR, SDL_Init\n";
         return -1;
     }
 
     cout << "SDL2 loaded.\n";
-
+    
+    GameSound game_audio;
+    
+    game_audio.PlaySound("./res/BackgroundMusic.wav"); 
     // The window we'll be rendering to
     SDL_Window* window = NULL;
     // The surface contained by the window
@@ -159,7 +163,7 @@ int main() {
 
     int enemyRegen = 5 * 60;
     int enemySpawn = 20 * 60;
-
+   game_audio.PlaySound("./res/Wilhelm.wav"); 
     while (running) {
         SDL_UpdateWindowSurface(window);
 
