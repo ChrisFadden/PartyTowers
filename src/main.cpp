@@ -115,7 +115,7 @@ int main() {
 
 
     //Testing Images
-    Player p1("marx bros", 0, 0);
+    Player p1(0, 0, 0, nullptr);
     Cursor c1;
     GameObject go1;
     go1.loadImg("./res/BaseTower.png", renderer);
