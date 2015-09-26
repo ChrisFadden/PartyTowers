@@ -1,7 +1,7 @@
 #include "Player.h"
 
-Player(string PlayerID, int Score, int Money) {
-	playerID = playerID;
+Player::Player(string PlayerID, int Score, int Money) {
+	playerID = PlayerID;
 	score = Score;
 	money = Money;
 
