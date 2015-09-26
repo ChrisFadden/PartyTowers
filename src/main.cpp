@@ -49,6 +49,8 @@ Player* getPlayerbyID(int id);
 void addPlayerbyID(int id, SDL_Renderer* r);
 void addTower(int id, int type, SDL_Renderer* r);
 
+int init();
+
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
         std::cout << "ERROR, SDL_Init\n";
@@ -66,14 +68,8 @@ int main() {
                               SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                               SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
-    int flag = IMG_INIT_PNG;
-    if ((IMG_Init(flag) & flag) != flag) {
-        std::cout << "Error, SDL_image!\n";
-        return -1;
-    }
-
-    if (SDLNet_Init() == -1) {
-        std::cout << "ERROR, SDLNet_Init\n";
+    if(init() == -1) {
+        std::cout << "Quitting\n";
         return -1;
     }
 
@@ -180,7 +176,15 @@ int main() {
             } else if (msgID == 3) {
                 MsgStruct* p = newPacket(3);
                 // Can I place a tower here? 1 yes, 0 no
-                p->write("1");
+                Player* player = getPlayerbyID(pID);
+                auto player_pos = player->getPos();
+                if(lvl1.spotOpen(player_pos.first, player_pos.second)) {
+                    std::cout << "Spot" << player_pos.first <<" " <<player_pos.second << "open\n";
+                    p->write("1");
+                } else {
+                    std::cout << "Spot" << player_pos.first <<" " <<player_pos.second << "closed\n";
+                    p->write("0");
+                }
                 send(p, pID);
             } else if (msgID == 4) {
                 int towerType = packet->readInt();
@@ -402,6 +406,27 @@ void addTower(int id, int type, SDL_Renderer* r) {
         rocket->loadImg(r);
         t = rocket;
     }
+    
+    if(!lvl1.spotOpen(x, y)) {
+        std::cout << "Position wasn't open!\n";
+        delete t;
+        return;
+    }
     t->setPlayer(p);
     listTower.push_back(t);
+    lvl1.addGameObject(t);
+}
+
+int init() {
+    int flag = IMG_INIT_PNG;
+    if ((IMG_Init(flag) & flag) != flag) {
+        std::cout << "Error, SDL_image!\n";
+        return -1;
+    }
+
+    if (SDLNet_Init() == -1) {
+        std::cout << "ERROR, SDLNet_Init\n";
+        return -1;
+    }
+    return 0;
 }
