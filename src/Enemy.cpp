@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Level.h"
 
 Enemy::Enemy(int Speed, int Health, bool IsAlive, int Wave) {
   speed = Speed;
@@ -22,3 +23,4 @@ bool Enemy::getAlive() { return isAlive; }
 void Enemy::setWave(int Wave) { wave = Wave; }
 
 int Enemy::getWave() { return wave; }
+
