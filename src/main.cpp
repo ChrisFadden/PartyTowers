@@ -168,6 +168,8 @@ int main() {
 
         //Drawing code
         SDL_RenderClear(renderer);
+        //For each path item, draw
+        //For each base tower, draw
         //For each object, get image, draw, SDL_RenderCopy
         SDL_Texture* t = go1.draw();
         SDL_Rect txr;
