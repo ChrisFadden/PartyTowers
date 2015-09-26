@@ -153,7 +153,7 @@ function handleNetwork() {
         }
     } else if (msgID === 5) {
         var money = packet.read();
-        $("#money").text("Points: "+money);
+        $("#notify2").text("Points: "+money);
     }
 }
 
