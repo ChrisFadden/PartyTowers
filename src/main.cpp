@@ -26,6 +26,7 @@ void setupMessages();
 MsgStruct* newPacket(int);
 bool canHandleMsg(bool);
 MsgStruct* readPacket(bool);
+void drawPath(Path*, SDL_Renderer*);
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -43,6 +44,7 @@ string roomCode;
 
 vector<Tower*> listTower;
 vector<Enemy*> listEnemy;
+vector<GameObject*> listFloors;
 unordered_map<int, Player*> listPlayers;
 Level lvl1(640, 480);
 
@@ -143,6 +145,7 @@ int main() {
     path->addDest(0,0);
     path->addDest(128,0);
     path->addDest(128,128);
+    drawPath(path, renderer);
 
     soldier->setPath(path);
 
@@ -225,6 +228,10 @@ int main() {
         int r, radius;
         int radiusAttacked = 10000;
         for (auto t : listTower) {
+            t->update();
+            if (!(t->canFire())) {
+                continue;
+            }
             for (auto e : listEnemy) {
                 r = t->getRange();
                 auto tpair = t->getPosition();
@@ -233,8 +240,7 @@ int main() {
                                   (epair.first - tpair.first) +
                               (epair.second - tpair.second) *
                                   (epair.second - tpair.second));
-                if(radius < r && radius < radiusAttacked)
-                {
+                if(radius < r && radius < radiusAttacked) {
                     radiusAttacked = radius;
                     attacked = e;
                 }
@@ -242,6 +248,10 @@ int main() {
             if (attacked) {
                 cout << "Hit the enemy!\n";
                 attacked->setHealth(attacked->getHealth() - t->getPower());
+                if (attacked->getHealth() <= 0) {
+                    attacked->setAlive(false);
+                }
+                t->reloadTower();
             }
         }  // end of tower loop
 
@@ -254,6 +264,19 @@ int main() {
         txr.h = 32;
         // For each path item, draw
         // For each base tower, draw
+        
+        for (auto it : listFloors) {
+            GameObject* f = it;
+            pair<int, int> floor_pos = f->getPosition();
+            txr.x = floor_pos.first;
+            txr.y = floor_pos.second;
+            SDL_Texture* tx = f->draw();
+            if(!tx) {
+                std::cout << "ERROR, tx is NULL!!!";
+            }
+            SDL_RenderCopy(renderer, tx, NULL, &txr);
+        }
+
         for (auto it : listTower) {
             Tower* t = it;
             pair<int, int> tower_pos = t->getPosition();
@@ -276,8 +299,16 @@ int main() {
             SDL_RenderCopy(renderer, t, NULL, &txr);
         }
 
+        vector<int> toRemove;
+        
+        int tCount = -1;
         for (auto e : listEnemy) {
+            tCount += 1;
             e->move();
+            if (!(e->getAlive())) {
+                toRemove.push_back(tCount);
+                continue;
+            }
             pair<int, int> e_pos = e->getPosition();
             txr.x = e_pos.first;
             txr.y = e_pos.second;
@@ -286,6 +317,11 @@ int main() {
                 cout << "Error, tx is NULL!";
             }
             SDL_RenderCopy(renderer, tx, NULL, &txr);
+        }
+
+        for (auto i : toRemove) {
+            delete(listEnemy.at(i));
+            listEnemy.erase(listEnemy.begin() + i);
         }
 
         // SDL_RenderCopy(renderer, t, NULL, &txr);
@@ -300,6 +336,30 @@ int main() {
     SDL_Quit();
 
     return 0;
+}
+
+void drawPath(Path* path, SDL_Renderer* renderer) {
+    int stage = 0;
+    pair<int,int> walker = path->getDest(stage);
+    stage += 1;
+    while (stage < path->length()) {
+        GameObject* obj = new GameObject();
+        obj->setPos(walker.first, walker.second);
+        obj->loadImg("./res/BlueRect.png", renderer);
+        listFloors.push_back(obj);
+        pair<int,int> goal = path->getDest(stage);
+        if (walker.first < goal.first) {
+            walker.first += 32;
+        } else if (walker.first < goal.first) {
+            walker.first -= 32;
+        } else if (walker.second < goal.second) {
+            walker.second += 32;
+        } else if (walker.second > goal.second) {
+            walker.second -= 32;
+        } else {
+            stage += 1;
+        }
+    }
 }
 
 void setupMessages() {

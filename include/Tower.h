@@ -7,7 +7,9 @@
 
 class Tower : public GameObject {
  public:
-  
+ 
+    Tower();
+
   void setRange(int);  // Set function for range
   int getRange();  // Get function for range
 
@@ -26,6 +28,10 @@ class Tower : public GameObject {
   void setSell(int);
   int getSell();  // Get function for sellValue
 
+  void setTimeout(int);
+  void reloadTower();
+  bool canFire();
+  void update();
 
   void setPosition(int, int);
   std::pair<int, int> getPosition();
@@ -43,6 +49,8 @@ class Tower : public GameObject {
   int cost;
   int upgradeCost;
   int sellValue;
+  int timeout;
+  int reload;
   Player* p;
   
 };

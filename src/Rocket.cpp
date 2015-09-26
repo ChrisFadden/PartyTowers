@@ -6,6 +6,8 @@ Rocket::Rocket(int X, int Y, int Level) {
 	setPower(Level * 1.5);
 	setCost(10);
 	setUpgrade(10);
+    setRange(128);
+    setTimeout(180);
 	setSell(0.666 * Level * 10);
 	level = Level;
 }

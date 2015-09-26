@@ -2,6 +2,13 @@
 #include "Tower.h"
 
 using namespace std;
+
+Tower::Tower() {
+    timeout = 0;
+    reload = 0;
+
+}
+
 /***********************
  * Get and Set Functions
  **********************/
@@ -28,6 +35,24 @@ void Tower::setPosition(int X, int Y){
 	y = Y;
 }
 
+void Tower::setTimeout(int time) {
+    timeout = time;
+    reload = 0;
+}
+
+void Tower::reloadTower() {
+    reload = timeout;
+}
+
+bool Tower::canFire() {
+    return reload <= 0;
+}
+
+void Tower::update() {
+    if (reload > 0 ){
+        reload -= 1;
+    }
+}
 
 
 pair<int, int> Tower::getPosition() { 

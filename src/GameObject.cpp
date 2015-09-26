@@ -4,6 +4,8 @@ GameObject::GameObject() {}
 
 GameObject::~GameObject() {}
 
+std::pair<int,int> GameObject::getPosition() { return std::pair<int,int>(x,y);}
+
 int GameObject::getX() { return x; }
 
 int GameObject::getY() { return y; }
