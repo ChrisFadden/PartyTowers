@@ -2,7 +2,7 @@
 #define _SOUND_H
 
 #include "SDL.h"
-#include "SDL_audio.h"
+#include "SDL_mixer.h"
 
 void PlaySound(char*); //Play .wav file
     

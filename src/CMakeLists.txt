@@ -5,4 +5,4 @@ TowerBase.cpp MsgStruct.cpp DrawableObject.cpp Cursor.cpp TextureLoader.cpp Sold
 Cavalry.cpp Cannon.cpp Rocket.cpp Sound.cpp)
 
 add_executable(partytowers ${MY_SOURCES})
-target_link_libraries(partytowers SDL2 SDL2_net SDL2_image)
+target_link_libraries(partytowers SDL2 SDL2_net SDL2_image SDL2_mixer)
