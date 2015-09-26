@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player(string PlayerID, int Score, int Money) {
+Player::Player(string PlayerID, int Score, int Money) {
 	playerID = playerID;
 	score = Score;
 	money = Money;
