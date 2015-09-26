@@ -97,6 +97,7 @@ def findHost(code):
     return None
 
 def newHostCode():
+    return "EPXX";
     chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     code = ''.join(chars[int(random.random()*26)] for _ in range(4))
     if findHost(code):
