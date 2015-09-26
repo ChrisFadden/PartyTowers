@@ -27,5 +27,7 @@
 *.out
 *.app
 
+*.swp
+
 build
 partytowers

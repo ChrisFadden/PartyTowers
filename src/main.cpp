@@ -2,15 +2,25 @@
 #include <SDL.h>
 #include <SDL_net.h>
 #include <string>
+#include <vector>
+#include <MsgStruct.h>
 
 using namespace std;
 
-int send(string buffer);
+int send(string);
+MsgStruct* createMsgStruct(int, bool);
+
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 SDLNet_SocketSet socketSet;
 TCPsocket sock;
+
+char buffer[512];
+int bufferSize;
+
+vector<MsgStruct*> outMsgStructs;
+vector<MsgStruct*> inMsgStructs;
 
 int main() {
     std::cout << "HELLO PARTY TOWERS!!!!\n";
@@ -49,9 +59,8 @@ int main() {
     SDLNet_TCP_AddSocket(socketSet, sock);
 
     send("TCP");
-
+    bufferSize = 0;
     bool waiting = true;
-    char buffer[512];
     while(waiting) {
         if (SDLNet_TCP_Recv(sock, buffer, 512) > 0) {
             waiting = false;
@@ -76,12 +85,16 @@ int main() {
             }
         }
 
-        int ready = SDLNet_CheckSockets(socketSet, 1);
+        int ready = SDLNet_CheckSockets(socketSet, 15);
         if (ready > 0 && SDLNet_SocketReady(sock)) {
-            if (SDLNet_TCP_Recv(sock, buffer, 512) > 0) {
+            int s = SDLNet_TCP_Recv(sock, buffer+bufferSize, 512);
+            if (s > 0) {
+                bufferSize += s;
                 cout << "\nData: \n";
                 cout << buffer;
                 cout << "\n";
+                string msg = string(buffer);
+                cout << msg.substr(1,4);
             }
         }
 
@@ -102,6 +115,16 @@ int main() {
     SDL_Quit();
 
     return 0;
+}
+
+MsgStruct* createMsgStruct(int msgID, bool outgoing) {
+    MsgStruct* packet = new MsgStruct(msgID);
+    if (outgoing) {
+        outMsgStructs.push_back(packet);
+    } else {
+        inMsgStructs.push_back(packet);
+    }
+    return packet;
 }
 
 int send(string buffer) {

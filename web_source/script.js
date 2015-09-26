@@ -3,8 +3,16 @@ var MSG_LOGIN = 999;
 
 $(document).ready(function() {
 
+    $("#game").hide();
+
    // Setup our message objects (packets)
     setupMessages();
+
+    $("#room").val("EPXX");
+
+    $("#room").on('input', function() {
+        $("#room").val($("#room").val().toUpperCase());
+    });
 
     $("#login").click(function() {
         startConnection();
@@ -20,6 +28,7 @@ $(document).ready(function() {
 function setupMessages() {
     // Incoming MSG_LOGIN
     var m1 = createMsgStruct(MSG_LOGIN, false);
+    m1.addChars(2);
     // This packet will be carrying two chars
 
     // Outgoing MSG_LOGIN
@@ -37,6 +46,7 @@ function startConnection() {
         // and then we send the packet!
         packet.send();
         $("#notify").text("Connected!");
+        $("#game").show();
     }
 
     // This will be called when the connection is closed
@@ -45,7 +55,7 @@ function startConnection() {
     }
 
     // Start the connection!
-    wsconnect("ws://localhost:8886", onopen, onclose);
+    wsconnect("ws://128.61.27.41:8886", onopen, onclose);
 }
 
 // This function handles incoming packets
