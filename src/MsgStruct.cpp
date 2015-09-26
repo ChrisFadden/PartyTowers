@@ -12,6 +12,7 @@ MsgStruct::MsgStruct(int msgID){
     this->msgID = msgID;
     numParts = 0;
     nextPart = 0;
+    pID = 0;
     data = "";
 }
 
@@ -27,6 +28,10 @@ int MsgStruct::size() {
 
 int MsgStruct::getMsgID() {
     return msgID;
+}
+
+int MsgStruct::getPID() {
+    return pID;
 }
 
 bool MsgStruct::canHandle(string dat) {
@@ -73,10 +78,16 @@ int MsgStruct::readInt() {
     return atoi(read().c_str());
 }
 
-MsgStruct* MsgStruct::fillFromData() {
+MsgStruct* MsgStruct::fillFromData(bool confirmed) {
     string dataS = string(buffer).substr(2, bufferSize-2);
     int part = 1;
+    int offset = 3;
     int ind = 3;
+    if (confirmed) {
+        pID = atoi(dataS.substr(0,2).c_str());
+        ind = 5;
+        offset = 5;
+    }
     while (part <= numParts) {
         string mType = parts[part];
         int mLen = sizes[part];
@@ -89,7 +100,7 @@ MsgStruct* MsgStruct::fillFromData() {
         }
         part += 1;
     }
-    data = dataS.substr(3, ind-3);
+    data = dataS.substr(offset, ind-offset);
     //cout << "Our data: " + data + "\n";
     nextPart = 0;
     int count = 0;
@@ -98,8 +109,13 @@ MsgStruct* MsgStruct::fillFromData() {
         buffer[count] = buffer[i];
         count++; 
     }
-    bufferSize -= ind;
-    //cout << "New buffer: " + string(buffer) + "\n";
+    bufferSize -= ind + 2;
+    /*
+    cout << "New buffer: " + string(buffer) + "\n";
+    cout << "New buffer size: ";
+    cout << bufferSize;
+    cout << "\n";
+    */
     return this;
 }
 

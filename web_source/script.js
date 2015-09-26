@@ -35,6 +35,9 @@ function setupMessages() {
     var i1 = createMsgStruct(MSG_LOGIN, true);
     // This packet sends a string (our name) to the server
     i1.addChars(4);
+
+    var i2 = createMsgStruct(2, true);
+    i2.addChars(1);
 }
 
 function startConnection() {
@@ -54,6 +57,26 @@ function startConnection() {
         window.location.href = '/';
     }
 
+    $("#upBtn").click(function() {
+        var packet = newPacket(2);
+        packet.write("u");
+        packet.send();
+    });
+    $("#downBtn").click(function() {
+        var packet = newPacket(2);
+        packet.write("d");
+        packet.send();
+    });
+    $("#leftBtn").click(function() {
+        var packet = newPacket(2);
+        packet.write("l");
+        packet.send();
+    });
+    $("#rightBtn").click(function() {
+        var packet = newPacket(2);
+        packet.write("r");
+        packet.send();
+    });
     // Start the connection!
     wsconnect("ws://128.61.27.41:8886", onopen, onclose);
 }
