@@ -116,12 +116,6 @@ int main() {
         cout << "It works!\n";
     }
 
-    // Testing Images
-    Player p1(0, 0, 0, &lvl1);
-    p1.loadImg(renderer);
-    listPlayers.emplace(0, &p1);
-    GameObject go1;
-    go1.loadImg("./res/BaseTower.png", renderer);
 
     SDL_Event e;
     bool running = true;
