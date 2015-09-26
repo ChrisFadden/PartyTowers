@@ -24,20 +24,22 @@ vector<MsgStruct*> inMsgStructs;
 
 int main() {
     std::cout << "HELLO PARTY TOWERS!!!!\n";
-    if(SDL_Init( SDL_INIT_VIDEO ) == -1) {
+    if (SDL_Init(SDL_INIT_VIDEO) == -1) {
         std::cout << "ERROR, SDL_Init\n";
         return -1;
     }
 
-    //The window we'll be rendering to
-    SDL_Window* window = NULL;        
-    //The surface contained by the window
+    // The window we'll be rendering to
+    SDL_Window* window = NULL;
+    // The surface contained by the window
     SDL_Surface* screenSurface = NULL;
 
-    window = SDL_CreateWindow( "Party Towers", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-    screenSurface = SDL_GetWindowSurface( window );
+    window = SDL_CreateWindow("Party Towers", SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+            SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    screenSurface = SDL_GetWindowSurface(window);
 
-    if(SDLNet_Init() == -1) {
+    if (SDLNet_Init() == -1) {
         std::cout << "ERROR, SDLNet_Init\n";
         return -1;
     }
@@ -59,9 +61,10 @@ int main() {
     SDLNet_TCP_AddSocket(socketSet, sock);
 
     send("TCP");
-    bufferSize = 0;
+
     bool waiting = true;
-    while(waiting) {
+    char buffer[512];
+    while (waiting) {
         if (SDLNet_TCP_Recv(sock, buffer, 512) > 0) {
             waiting = false;
             cout << buffer;
@@ -70,16 +73,17 @@ int main() {
 
     send("9990000");
 
-    SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
+    SDL_FillRect(screenSurface, NULL,
+            SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
 
     SDL_Event e;
     bool running = true;
     int k = 0;
     Uint32 ctime = SDL_GetTicks();
     while (running) {
-        SDL_UpdateWindowSurface( window );
+        SDL_UpdateWindowSurface(window);
 
-        while (SDL_PollEvent( &e ) != 0) {
+        while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 running = false;
             }
@@ -106,7 +110,7 @@ int main() {
             cout << "\n";
         }
     }
- 
+
     SDL_FreeSurface( screenSurface );
     SDL_DestroyWindow( window );
 
@@ -129,7 +133,7 @@ MsgStruct* createMsgStruct(int msgID, bool outgoing) {
 
 int send(string buffer) {
     int len = buffer.size() + 1;
-    int out = SDLNet_TCP_Send(sock, (void *)buffer.c_str(), len);
+    int out = SDLNet_TCP_Send(sock, (void*)buffer.c_str(), len);
     if (out < len) {
         fprintf(stderr, "SDLNet_TCP_Send: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);

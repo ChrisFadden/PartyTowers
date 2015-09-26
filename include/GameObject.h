@@ -2,17 +2,17 @@
 #define GAMEOBJECT_H
 
 class GameObject {
-    protected:
-        int x, y;
-    public:
-        GameObject();
-        ~GameObject();
-        int getX();
-        int getY();
-        virtual void setX(int x);
-        virtual void setY(int y);
-        virtual void setPos(int nx, int ny);
-};
+ protected:
+  int x, y;
 
+ public:
+  GameObject();
+  ~GameObject();
+  int getX();
+  int getY();
+  virtual void setX(int x);
+  virtual void setY(int y);
+  virtual void setPos(int nx, int ny);
+};
 
 #endif
