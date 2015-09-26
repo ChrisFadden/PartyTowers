@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "GameObject.h"
 #include "Cursor.h"
+#include <unordered_map>
 
 using namespace std;
 
@@ -27,7 +28,12 @@ vector<MsgStruct*> outMsgStructs;
 vector<MsgStruct*> inMsgStructs;
 
 vector<GameObject*> listObj;
-vector<Player*> listPlayers;
+unordered_map<int,Player*> listPlayers;
+
+
+
+//User IO functions to be called from networking code?
+Player* getPlayerbyID(int id);
 
 int main() {
   std::cout << "HELLO PARTY TOWERS!!!!\n";
@@ -94,8 +100,8 @@ int main() {
 
 
   //Testing Images
-  Player p1("marx bros", 0, 0);
-  Cursor c1;
+  //id, score, money, level pointer
+  Player p1(0, 0, 0, nullptr);
   GameObject go1;
   go1.loadImg("./res/BaseTower.png", renderer);
 
@@ -139,8 +145,10 @@ int main() {
         //For each object, get image, draw, SDL_RenderCopy
         SDL_Texture* t = go1.draw();
         SDL_Rect txr;
+        //img position
         txr.x = 0;
         txr.y = 0;
+        //img size
         txr.w = 32;
         txr.h = 32;
         SDL_RenderCopy(renderer, t, NULL, &txr);
@@ -177,4 +185,13 @@ int send(string buffer) {
         exit(EXIT_FAILURE);
     }
     return 0;
+}
+
+
+Player* getPlayerbyID(int id) {
+    auto it = listPlayers.find(id);
+    if(it != listPlayers.end()) {
+        return it->second;
+    }
+    return nullptr;
 }

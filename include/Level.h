@@ -2,6 +2,7 @@
 #define LEVEL_H
 
 #include "GameObject.h"
+#include "Cursor.h"
 #include <set>
 #include <utility>
 
@@ -13,6 +14,7 @@ class Level {
   void addGameObject(GameObject* gobj);
   void removeGameObject(GameObject* gobj);
   void moveGameObject(GameObject* gobj, int, int);
+  void moveCursor(Cursor* c, int, int);
 
  private:
   std::set<std::pair<int, int>> occupied_tiles;

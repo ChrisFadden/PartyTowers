@@ -63,3 +63,16 @@ void Level::moveGameObject(GameObject* gobj, int addX, int addY) {
   gobj->setY(y);
   return;
 }
+
+void Level::moveCursor(Cursor* c, int dx, int dy) {
+    int x = c->getX();
+    int y = c->getY();
+    
+    //If out of bounds, don't move cursor
+    if (x+dx > width || y+dy > height) {
+        return;
+    }
+
+    c->setX(x+dx);
+    c->setY(y+dy);
+}
