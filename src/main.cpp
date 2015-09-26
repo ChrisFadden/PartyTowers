@@ -40,7 +40,6 @@ unordered_map<int,Player*> listPlayers;
 Level lvl1(640, 480);
 
 
-
 //User IO functions to be called from networking code?
 Player* getPlayerbyID(int id);
 void addPlayerbyID(int id, SDL_Renderer* r);
@@ -312,7 +311,7 @@ int send(string data) {
 
 int send(string data, int pID) {
     if (pID > 0) {
-        data = extend(pID, 2) + data;
+        data = extend(pID, 2) + data + "*";
     }
     int len = data.size() + 1;
     int out = SDLNet_TCP_Send(sock, (void*)data.c_str(), len);
