@@ -39,10 +39,10 @@ string roomCode;
 
 vector<Tower*> listTower;
 vector<Enemy*> listEnemy;
-unordered_map<int,Player*> listPlayers;
+unordered_map<int, Player*> listPlayers;
 Level lvl1(640, 480);
 
-//User IO functions to be called from networking code?
+// User IO functions to be called from networking code?
 Player* getPlayerbyID(int id);
 void addPlayerbyID(int id, SDL_Renderer* r);
 
@@ -60,11 +60,11 @@ int main() {
     SDL_Surface* screenSurface = NULL;
 
     window = SDL_CreateWindow("Party Towers", SDL_WINDOWPOS_UNDEFINED,
-            SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-            SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+                              SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+                              SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
     int flag = IMG_INIT_PNG;
-    if ((IMG_Init(flag)&flag) != flag) {
+    if ((IMG_Init(flag) & flag) != flag) {
         std::cout << "Error, SDL_image!\n";
         return -1;
     }
@@ -103,20 +103,22 @@ int main() {
             }
         }
     }
-    
+
     send("9990000");
 
-    //Create Renderer
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-    printf("This is what happens when Marcus writes a renderer %s\n",SDL_GetError());
+    // Create Renderer
+    SDL_Renderer* renderer =
+        SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    printf("This is what happens when Marcus writes a renderer %s\n",
+           SDL_GetError());
     if (renderer) {
         cout << "It works!\n";
     }
 
-    //Testing Images
+    // Testing Images
     Player p1(0, 0, 0, &lvl1);
     p1.loadImg(renderer);
-    listPlayers.emplace(0,&p1);
+    listPlayers.emplace(0, &p1);
     GameObject go1;
     go1.loadImg("./res/BaseTower.png", renderer);
 
@@ -139,9 +141,9 @@ int main() {
 
         int ready = SDLNet_CheckSockets(socketSet, 15);
         if (ready > 0 && SDLNet_SocketReady(sock)) {
-            int s = SDLNet_TCP_Recv(sock, buffer+bufferSize, 512);
+            int s = SDLNet_TCP_Recv(sock, buffer + bufferSize, 512);
             if (s > 0) {
-                bufferSize += s;                  
+                bufferSize += s;
             }
         }
 
@@ -149,19 +151,19 @@ int main() {
             MsgStruct* packet = readPacket(confirmed);
             int pID = packet->getPID();
             int msgID = packet->getMsgID();
-           
+
             if (msgID == 999) {
                 confirmed = true;
                 roomCode = packet->read();
-                cout << "Room code: "+roomCode+"\n"; 
+                cout << "Room code: " + roomCode + "\n";
             } else if (msgID == 998) {
                 cout << "New player!\n";
                 addPlayerbyID(pID, renderer);
             } else if (msgID == 2) {
                 string dir = packet->read();
                 // We have pID and dir
-                 Player* p = getPlayerbyID(pID);
-                if(dir == "l") {
+                Player* p = getPlayerbyID(pID);
+                if (dir == "l") {
                     p->moveLeft();
                 } else if (dir == "r") {
                     p->moveRight();
@@ -190,54 +192,64 @@ int main() {
             }
         }
 
-        k +=1 ;
+        k += 1;
         if (SDL_GetTicks() - ctime > 1000) {
-            //cout << k;
+            // cout << k;
             k = 0;
             ctime = SDL_GetTicks();
-            //cout << "\n";
+            // cout << "\n";
         }
 
-        //Drawing code
+        /***************
+         * Aiming Code
+         **************/
+        Enemy attacked;
+        int r, radius; 
+        for (auto t : listTower) {
+            for (auto e : listEnemy) {
+                r = t->getRange();
+                auto tpair = t->getPosition();
+                auto epair = e->getPosition();
+                radius = sqrt((epair.first - tpair.first) *
+                                  (epair.first - tpair.first) +
+                              (epair.second - tpair.second) *
+                                  (epair.second - tpair.second));
+                if(radius < r)
+                {
+                    attacked = *e;
+                }
+            }  // end of enemy loop
+        }  // end of tower loop
+
+        // Drawing code
         SDL_RenderClear(renderer);
-        //For each path item, draw
-        //For each base tower, draw
-        //For each object, get image, draw, SDL_RenderCopy
+        // For each path item, draw
+        // For each base tower, draw
+        // For each object, get image, draw, SDL_RenderCopy
         SDL_Texture* t = go1.draw();
         SDL_Rect txr;
-        //img position
+        // img position
         txr.x = 0;
         txr.y = 0;
-        //img size
+        // img size
         txr.w = 32;
         txr.h = 32;
-        //For each player, get cursor, draw
-        for(auto it : listPlayers) {
+        // For each player, get cursor, draw
+        for (auto it : listPlayers) {
             Player* p = it.second;
-            pair<int,int>player_pos = p->getPos();
+            pair<int, int> player_pos = p->getPos();
             txr.x = player_pos.first;
             txr.y = player_pos.second;
             SDL_Texture* t = p->getTexture();
             SDL_RenderCopy(renderer, t, NULL, &txr);
         }
-       
-        for(auto t : listTower)
-        {
 
-
-        }
-
-
-
-
-        //SDL_RenderCopy(renderer, t, NULL, &txr);
+        // SDL_RenderCopy(renderer, t, NULL, &txr);
         SDL_RenderPresent(renderer);
-
     }
 
-
-    SDL_FreeSurface( screenSurface );
-    SDL_DestroyWindow( window );
+    SDL_FreeSurface(screenSurface);
+    SDL_DestroyWindow(window);
 
     SDLNet_TCP_Close(sock);
     SDLNet_Quit();
@@ -278,31 +290,31 @@ bool canHandleMsg(bool confirmed) {
     if (data.size() < 5) {
         return false;
     }
-    //cout << "Handling message...\n";
+    // cout << "Handling message...\n";
     int offset = 2;
     if (confirmed) {
         offset += 2;
     }
-    //cout << data + "\n";
+    // cout << data + "\n";
     data = data.substr(offset);
-    //cout << data + "\n";
+    // cout << data + "\n";
     string rawMsgID = data.substr(0, 3);
-    //cout << rawMsgID + "\n";
+    // cout << rawMsgID + "\n";
     int msgID = atoi(rawMsgID.c_str());
     if (inMsgStructs.find(msgID) != inMsgStructs.end()) {
         return inMsgStructs[msgID]->canHandle(data);
     }
-    cout << "Message ID does not exist " + rawMsgID+ "\n";
+    cout << "Message ID does not exist " + rawMsgID + "\n";
     return false;
 }
 
 MsgStruct* readPacket(bool confirmed) {
-    string data = string(buffer).substr(0,bufferSize);
+    string data = string(buffer).substr(0, bufferSize);
     int offset = 2;
     if (confirmed) {
         offset += 2;
     }
-    int msgID = atoi(data.substr(offset,3).c_str());
+    int msgID = atoi(data.substr(offset, 3).c_str());
     return inMsgStructs[msgID]->fillFromData(confirmed);
 }
 
@@ -316,13 +328,9 @@ MsgStruct* createMsgStruct(int msgID, bool outgoing) {
     return packet;
 }
 
-MsgStruct* newPacket(int msgID) {
-    return outMsgStructs[msgID]->reset();
-}
+MsgStruct* newPacket(int msgID) { return outMsgStructs[msgID]->reset(); }
 
-int send(string data) {
-    send(data, 0);
-}
+int send(string data) { send(data, 0); }
 
 int send(string data, int pID) {
     if (pID > 0) {
@@ -337,14 +345,11 @@ int send(string data, int pID) {
     return 0;
 }
 
-int send(MsgStruct* packet, int pID) {
-    send(packet->getData(), pID);
-}
-
+int send(MsgStruct* packet, int pID) { send(packet->getData(), pID); }
 
 Player* getPlayerbyID(int id) {
     auto it = listPlayers.find(id);
-    if(it != listPlayers.end()) {
+    if (it != listPlayers.end()) {
         return it->second;
     }
     return nullptr;
@@ -352,7 +357,7 @@ Player* getPlayerbyID(int id) {
 
 void addPlayerbyID(int id, SDL_Renderer* r) {
     auto it = listPlayers.find(id);
-    if(it == listPlayers.end()) {
+    if (it == listPlayers.end()) {
         Player* p = new Player(id, 0, 0, &lvl1);
         p->loadImg(r);
         listPlayers.emplace(id, p);
