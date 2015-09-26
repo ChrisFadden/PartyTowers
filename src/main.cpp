@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 #include <MsgStruct.h>
+#include "Player.h"
+#include "GameObject.h"
+#include "Cursor.h"
 
 using namespace std;
 
@@ -23,6 +26,9 @@ int bufferSize;
 vector<MsgStruct*> outMsgStructs;
 vector<MsgStruct*> inMsgStructs;
 
+vector<GameObject*> listObj;
+vector<Player*> listPlayers;
+
 int main() {
   std::cout << "HELLO PARTY TOWERS!!!!\n";
   if (SDL_Init(SDL_INIT_VIDEO) == -1) {
@@ -39,6 +45,12 @@ int main() {
                             SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                             SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
   screenSurface = SDL_GetWindowSurface(window);
+    
+  int flag = IMG_INIT_PNG;
+  if ((IMG_Init(flag)&flag) != flag) {
+      std::cout << "Error, SDL_image!\n";
+      return -1;
+  }
 
   if (SDLNet_Init() == -1) {
     std::cout << "ERROR, SDLNet_Init\n";
@@ -75,11 +87,17 @@ int main() {
   send("9990000");
   
   //Create Renderer
-  SDL_Renderer* renderer = SDL_CreateWindow(window, -1, SDL_RENDERER_SOFTWARE);
+  SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
   
   SDL_FillRect(screenSurface, NULL,
                SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
 
+
+  //Testing Images
+  Player p1("marx bros", 0, 0);
+  Cursor c1;
+  GameObject go1;
+  go1.loadImg("./res/BaseTower.png", renderer);
 
     SDL_Event e;
     bool running = true;
@@ -119,6 +137,13 @@ int main() {
         //Drawing code
         SDL_RenderClear(renderer);
         //For each object, get image, draw, SDL_RenderCopy
+        SDL_Texture* t = go1.draw();
+        SDL_Rect txr;
+        txr.x = 0;
+        txr.y = 0;
+        txr.w = 32;
+        txr.h = 32;
+        SDL_RenderCopy(renderer, t, NULL, &txr);
         SDL_RenderPresent(renderer);
 
     }

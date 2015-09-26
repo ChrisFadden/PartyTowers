@@ -16,7 +16,7 @@ class GameObject {
   virtual void setX(int x);
   virtual void setY(int y);
   virtual void setPos(int nx, int ny);
-  virtual void draw();
+  SDL_Texture* draw();
   void loadImg(std::string fn, SDL_Renderer* r);
 };
 
