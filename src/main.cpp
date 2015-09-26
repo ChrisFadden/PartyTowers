@@ -1,9 +1,13 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_net.h>
+#include <SDL_image.h>
 #include <string>
 #include <vector>
 #include <MsgStruct.h>
+#include "Player.h"
+#include "GameObject.h"
+#include "Cursor.h"
 
 using namespace std;
 
@@ -28,6 +32,9 @@ map<int, MsgStruct*> inMsgStructs;
 
 string roomCode;
 
+vector<GameObject*> listObj;
+vector<Player*> listPlayers;
+
 int main() {
     std::cout << "HELLO PARTY TOWERS!!!!\n";
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
@@ -43,7 +50,14 @@ int main() {
     window = SDL_CreateWindow("Party Towers", SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
             SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+
     screenSurface = SDL_GetWindowSurface(window);
+
+    int flag = IMG_INIT_PNG;
+    if ((IMG_Init(flag)&flag) != flag) {
+        std::cout << "Error, SDL_image!\n";
+        return -1;
+    }
 
     if (SDLNet_Init() == -1) {
         std::cout << "ERROR, SDLNet_Init\n";
@@ -65,9 +79,6 @@ int main() {
 
     setupMessages();
 
-    socketSet = SDLNet_AllocSocketSet(1);
-    SDLNet_TCP_AddSocket(socketSet, sock);
-
     send("TCP");
 
     bool waiting = true;
@@ -78,16 +89,26 @@ int main() {
             cout << "\n";
         }
     }
-
     send("9990000");
+
+    //Create Renderer
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
     SDL_FillRect(screenSurface, NULL,
             SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+
+
+    //Testing Images
+    Player p1("marx bros", 0, 0);
+    Cursor c1;
+    GameObject go1;
+    go1.loadImg("./res/BaseTower.png", renderer);
 
     SDL_Event e;
     bool running = true;
     int k = 0;
     Uint32 ctime = SDL_GetTicks();
+    int wave = 1;
     while (running) {
         SDL_UpdateWindowSurface(window);
 
@@ -103,10 +124,10 @@ int main() {
             if (s > 0) {
                 bufferSize += s;
                 /*
-                cout << "\nData: \n";
-                cout << buffer;
-                cout << "\n"; 
-                */
+                   cout << "\nData: \n";
+                   cout << buffer;
+                   cout << "\n"; 
+                   */
             }
         }
 
@@ -127,7 +148,21 @@ int main() {
             ctime = SDL_GetTicks();
             cout << "\n";
         }
+
+        //Drawing code
+        SDL_RenderClear(renderer);
+        //For each object, get image, draw, SDL_RenderCopy
+        SDL_Texture* t = go1.draw();
+        SDL_Rect txr;
+        txr.x = 0;
+        txr.y = 0;
+        txr.w = 32;
+        txr.h = 32;
+        SDL_RenderCopy(renderer, t, NULL, &txr);
+        SDL_RenderPresent(renderer);
+
     }
+
 
     SDL_FreeSurface( screenSurface );
     SDL_DestroyWindow( window );
