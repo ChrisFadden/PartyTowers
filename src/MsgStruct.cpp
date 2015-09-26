@@ -1,6 +1,9 @@
 #include <iostream>
 #include "MsgStruct.h"
 
+extern char buffer[512];
+extern int bufferSize;
+
 /********************
  * Constructors
  *******************/
@@ -22,22 +25,25 @@ int MsgStruct::size() {
     return data.size();
 }
 
-bool MsgStruct::canHandle(char* d) {
-    string data = string(d);
+int MsgStruct::getMsgID() {
+    return msgID;
+}
+
+bool MsgStruct::canHandle(string dat) {
     int part = 1;
     int ind = 3;
     while (part <= numParts) {
         string mType = parts[part];
         int mLen = sizes[part];
-        if (data.substr(ind).size() < mLen) {
+        if (dat.substr(ind).size() < mLen) {
             return false;
         }
         if (mType == "C"){
             ind += mLen;
         } else if (mType == "S") {
-            int size = atoi(data.substr(ind, ind+mLen).c_str());
+            int size = atoi(dat.substr(ind, mLen).c_str());
             ind += mLen;
-            if (size > data.substr(ind).size()) {
+            if (size > dat.substr(ind).size()) {
                 return false;
             }
             ind += size;
@@ -56,7 +62,7 @@ string MsgStruct::read() {
         out = data.substr(0, mLen);
     } else if (mType == "S") {
         int size = atoi(data.substr(0, mLen).c_str());
-        out = data.substr(mLen, mLen+size);
+        out = data.substr(mLen, size);
         mLen += size;
     }
     data = data.substr(mLen);
@@ -67,7 +73,8 @@ int MsgStruct::readInt() {
     return atoi(read().c_str());
 }
 
-MsgStruct* MsgStruct::fillFromData(char* d) {
+MsgStruct* MsgStruct::fillFromData() {
+    string dataS = string(buffer).substr(2, bufferSize-2);
     int part = 1;
     int ind = 3;
     while (part <= numParts) {
@@ -76,14 +83,23 @@ MsgStruct* MsgStruct::fillFromData(char* d) {
         if (mType == "C") {
             ind += mLen;
         } else if (mType == "S") {
-            int size = atoi(data.substr(ind, ind+mLen).c_str());
+            int size = atoi(dataS.substr(ind, mLen).c_str());
             ind += mLen;
             ind += size;
         }
         part += 1;
     }
-    data = data.substr(3, ind);
+    data = dataS.substr(3, ind-3);
+    //cout << "Our data: " + data + "\n";
     nextPart = 0;
+    int count = 0;
+    //cout << "Old buffer: " + string(buffer) + "\n";
+    for (int i=ind+2; i<bufferSize; i++) {
+        buffer[count] = buffer[i];
+        count++; 
+    }
+    bufferSize -= ind;
+    //cout << "New buffer: " + string(buffer) + "\n";
     return this;
 }
 

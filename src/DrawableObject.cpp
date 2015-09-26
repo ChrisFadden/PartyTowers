@@ -1,3 +1,4 @@
+#include <iostream>
 #include "DrawableObject.h"
 
 DrawableObject::DrawableObject(std::string filename, SDL_Renderer* r) {

@@ -14,6 +14,10 @@ using namespace std;
 
 int send(string);
 MsgStruct* createMsgStruct(int, bool);
+void setupMessages();
+MsgStruct* newPacket(int);
+bool canHandleMsg();
+MsgStruct* readPacket();
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -24,8 +28,10 @@ TCPsocket sock;
 char buffer[512];
 int bufferSize;
 
-vector<MsgStruct*> outMsgStructs;
-vector<MsgStruct*> inMsgStructs;
+map<int, MsgStruct*> outMsgStructs;
+map<int, MsgStruct*> inMsgStructs;
+
+string roomCode;
 
 vector<GameObject*> listObj;
 unordered_map<int,Player*> listPlayers;
@@ -36,80 +42,90 @@ unordered_map<int,Player*> listPlayers;
 Player* getPlayerbyID(int id);
 
 int main() {
-  std::cout << "HELLO PARTY TOWERS!!!!\n";
-  if (SDL_Init(SDL_INIT_VIDEO) == -1) {
-    std::cout << "ERROR, SDL_Init\n";
-    return -1;
-  }
-
-  // The window we'll be rendering to
-  SDL_Window* window = NULL;
-  // The surface contained by the window
-  SDL_Surface* screenSurface = NULL;
-
-  window = SDL_CreateWindow("Party Towers", SDL_WINDOWPOS_UNDEFINED,
-                            SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-                            SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-  screenSurface = SDL_GetWindowSurface(window);
-    
-  int flag = IMG_INIT_PNG;
-  if ((IMG_Init(flag)&flag) != flag) {
-      std::cout << "Error, SDL_image!\n";
-      return -1;
-  }
-
-  if (SDLNet_Init() == -1) {
-    std::cout << "ERROR, SDLNet_Init\n";
-    return -1;
-  }
-
-  std::cout << "WOO SDL2_Net!!!!\n";
-
-  IPaddress ip;
-
-  if (SDLNet_ResolveHost(&ip, "localhost", atoi("8886")) < 0) {
-    fprintf(stderr, "SDLNet_ResolveHost: %s\n", SDLNet_GetError());
-    exit(EXIT_FAILURE);
-  }
-
-  if (!(sock = SDLNet_TCP_Open(&ip))) {
-    fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
-  }
-
-  socketSet = SDLNet_AllocSocketSet(1);
-  SDLNet_TCP_AddSocket(socketSet, sock);
-
-  send("TCP");
-
-  bool waiting = true;
-  char buffer[512];
-  while (waiting) {
-
-    if (SDLNet_TCP_Recv(sock, buffer, 512) > 0) {
-      waiting = false;
-      cout << buffer;
+    if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+        std::cout << "ERROR, SDL_Init\n";
+        return -1;
     }
-  }
-  send("9990000");
-  
-  //Create Renderer
-  SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-  
-  SDL_FillRect(screenSurface, NULL,
-               SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+
+    cout << "SDL2 loaded.\n";
+
+    // The window we'll be rendering to
+    SDL_Window* window = NULL;
+    // The surface contained by the window
+    SDL_Surface* screenSurface = NULL;
+
+    window = SDL_CreateWindow("Party Towers", SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+            SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+
+    screenSurface = SDL_GetWindowSurface(window);
+
+    int flag = IMG_INIT_PNG;
+    if ((IMG_Init(flag)&flag) != flag) {
+        std::cout << "Error, SDL_image!\n";
+        return -1;
+    }
+
+    if (SDLNet_Init() == -1) {
+        std::cout << "ERROR, SDLNet_Init\n";
+        return -1;
+    }
+
+    std::cout << "SDL_net loaded.\n";
+
+    IPaddress ip;
+
+    if (SDLNet_ResolveHost(&ip, "localhost", atoi("8886")) < 0) {
+        fprintf(stderr, "SDLNet_ResolveHost: %s\n", SDLNet_GetError());
+        exit(EXIT_FAILURE);
+    }
+
+    if (!(sock = SDLNet_TCP_Open(&ip))) {
+        fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
+    }
+
+    socketSet = SDLNet_AllocSocketSet(1);
+    SDLNet_TCP_AddSocket(socketSet, sock);
+
+    setupMessages();
+
+    send("TCP");
+
+    bool waiting = true;
+    while (waiting) {
+        if (SDLNet_TCP_Recv(sock, buffer, 512) > 0) {
+            waiting = false;
+            if (string(buffer) == "1") {
+                cout << "Handshake to server made.\n";
+            }
+        }
+    }
+    
+    send("9990000");
+
+    //Create Renderer
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+
+    if (renderer) {
+        cout << "it works!\n";
+    }
+
+    SDL_FillRect(screenSurface, NULL,
+            SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
 
 
-  //Testing Images
-  //id, score, money, level pointer
-  Player p1(0, 0, 0, nullptr);
-  GameObject go1;
-  go1.loadImg("./res/BaseTower.png", renderer);
+    //Testing Images
+    Player p1("marx bros", 0, 0);
+    Cursor c1;
+    GameObject go1;
+    go1.loadImg("./res/BaseTower.png", renderer);
 
     SDL_Event e;
     bool running = true;
     int k = 0;
     Uint32 ctime = SDL_GetTicks();
     int wave = 1;
+
     while (running) {
         SDL_UpdateWindowSurface(window);
 
@@ -124,11 +140,21 @@ int main() {
             int s = SDLNet_TCP_Recv(sock, buffer+bufferSize, 512);
             if (s > 0) {
                 bufferSize += s;
-                cout << "\nData: \n";
-                cout << buffer;
-                cout << "\n";
-                string msg = string(buffer);
-                cout << msg.substr(1,4);
+                /*
+                   cout << "\nData: \n";
+                   cout << buffer;
+                   cout << "\n"; 
+                   */
+            }
+        }
+
+        if (canHandleMsg()) {
+            //cout << "We have a message!\n";
+            MsgStruct* packet = readPacket();
+            int msgID = packet->getMsgID();
+            if (msgID == 999) {
+                roomCode = packet->read();
+                cout << "Room code: "+roomCode+"\n"; 
             }
         }
 
@@ -155,8 +181,8 @@ int main() {
         SDL_RenderPresent(renderer);
 
     }
-    
-    
+
+
     SDL_FreeSurface( screenSurface );
     SDL_DestroyWindow( window );
 
@@ -167,14 +193,48 @@ int main() {
     return 0;
 }
 
+void setupMessages() {
+    MsgStruct* m1 = createMsgStruct(999, false);
+    m1->addChars(4);
+}
+
+bool canHandleMsg() {
+    if (bufferSize < 5) {
+        return false;
+    }
+    string data = string(buffer);
+    if (data.size() < 5) {
+        return false;
+    }
+    data = data.substr(2);
+    string rawMsgID = data.substr(0, 3);
+    //cout << rawMsgID + "\n";
+    int msgID = atoi(rawMsgID.c_str());
+    if (inMsgStructs.find(msgID) != inMsgStructs.end()) {
+        return inMsgStructs[msgID]->canHandle(data);
+    }
+    cout << "Message ID does not exist.";
+    return false;
+}
+
+MsgStruct* readPacket() {
+    string data = string(buffer).substr(0,bufferSize);
+    int msgID = atoi(data.substr(2,3).c_str());
+    return inMsgStructs[msgID]->fillFromData();
+}
+
 MsgStruct* createMsgStruct(int msgID, bool outgoing) {
     MsgStruct* packet = new MsgStruct(msgID);
     if (outgoing) {
-        outMsgStructs.push_back(packet);
+        outMsgStructs[msgID] = packet;
     } else {
-        inMsgStructs.push_back(packet);
+        inMsgStructs[msgID] = packet;
     }
     return packet;
+}
+
+MsgStruct* newPacket(int msgID) {
+    return outMsgStructs[msgID]->reset();
 }
 
 int send(string buffer) {

@@ -2,6 +2,7 @@
 #define DRAWABLE_OBJECT_H
 
 #include <SDL_image.h>
+#include <SDL.h>
 #include <string>
 
 class DrawableObject {
