@@ -1,20 +1,30 @@
 <html>
     <head>
-        <meta name="viewport" content="width=640,user-scalable=false" />
+        <meta name="viewport" content="width=320,user-scalable=false" />
 		<script src="lib/lib/jquery-1.11.3.js"></script>
 		<link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 		<title> PyWebPlug </title>
 	</head>
 	<body>
-        <script src="lib/ws-client.js"></script>
-        
+        <script src="lib/ws-client.js"></script> 
 		<script src="script.js"></script>	
-        <h1>PyWebPlug Login</h1>
+        <h5>PyWebPlug Login</h5>
         <span id="notify">Room code:</span>
         <form action="javascript:startConnection();">
             <input type="text" id="room">
         </form>
 
         <button id="login">Login</button>
+
+        <div id="game">
+            <div id="buttons">
+                <div class="arrowBtn" id="upBtn"><i class="fa fa-arrow-up fa-3x"></i></div>
+                <div class="arrowBtn" id="leftBtn"><i class="fa fa-arrow-left fa-3x"></i></div>
+                <div class="arrowBtn" id="rightBtn"><i class="fa fa-arrow-right fa-3x"></i></div>
+                <div class="arrowBtn" id="downBtn"><i class="fa fa-arrow-down fa-3x"></i></div>
+                <div class="arrowBtn" id="placeBtn"><i class="fa fa-dot-circle-o fa-3x"></i></div>
+            </div>
+        </div>
 	</body>
 </html>

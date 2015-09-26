@@ -16,3 +16,11 @@ void GameObject::setPos(int nx, int ny) {
   x = nx;
   y = ny;
 }
+
+SDL_Texture* GameObject::draw() {
+    return drawable->getTexture();
+}
+
+void GameObject::loadImg(std::string fn, SDL_Renderer* r) {
+    drawable = new DrawableObject(fn, r);
+}

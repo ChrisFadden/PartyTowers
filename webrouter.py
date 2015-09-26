@@ -33,7 +33,7 @@ class Client:
                 print("Trying to find host", code)
                 self.host = findHost(code)
                 if self.host:
-                    confirm(self)
+                    self.confirm()
         else:
             if self.host.socket:
                 self.host.socket.send(self.sID + data)
@@ -45,10 +45,10 @@ class Client:
     def confirm(self):
         self.pID = self.host.getNextpID()
         self.host.players[self.pID] = self
-        needsConfirmation = False
-        self.socket.send("999")
+        self.needsConfirmation = False
         self.sID = extend(self.pID, 2)
-        self.host.send("998" + self.sID)
+        self.socket.send("999" + self.sID)
+        self.host.socket.send(self.sID + "998")
 
     def becomeHost(self):
         host = Host(self.socket, newHostCode())
