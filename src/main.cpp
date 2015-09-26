@@ -9,6 +9,10 @@ using namespace std;
 
 int send(string);
 MsgStruct* createMsgStruct(int, bool);
+void setupMessages();
+MsgStruct* newPacket(int);
+bool canHandleMsg();
+MsgStruct* readPacket();
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -19,8 +23,10 @@ TCPsocket sock;
 char buffer[512];
 int bufferSize;
 
-vector<MsgStruct*> outMsgStructs;
-vector<MsgStruct*> inMsgStructs;
+map<int, MsgStruct*> outMsgStructs;
+map<int, MsgStruct*> inMsgStructs;
+
+string roomCode;
 
 int main() {
     std::cout << "HELLO PARTY TOWERS!!!!\n";
@@ -57,17 +63,19 @@ int main() {
         fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
     }
 
+    setupMessages();
+
     socketSet = SDLNet_AllocSocketSet(1);
     SDLNet_TCP_AddSocket(socketSet, sock);
 
     send("TCP");
 
     bool waiting = true;
-    char buffer[512];
     while (waiting) {
         if (SDLNet_TCP_Recv(sock, buffer, 512) > 0) {
             waiting = false;
             cout << buffer;
+            cout << "\n";
         }
     }
 
@@ -94,11 +102,21 @@ int main() {
             int s = SDLNet_TCP_Recv(sock, buffer+bufferSize, 512);
             if (s > 0) {
                 bufferSize += s;
+                /*
                 cout << "\nData: \n";
                 cout << buffer;
-                cout << "\n";
-                string msg = string(buffer);
-                cout << msg.substr(1,4);
+                cout << "\n"; 
+                */
+            }
+        }
+
+        if (canHandleMsg()) {
+            //cout << "We have a message!\n";
+            MsgStruct* packet = readPacket();
+            int msgID = packet->getMsgID();
+            if (msgID == 999) {
+                roomCode = packet->read();
+                cout << "Room code: "+roomCode+"\n"; 
             }
         }
 
@@ -121,14 +139,47 @@ int main() {
     return 0;
 }
 
+void setupMessages() {
+    MsgStruct* m1 = createMsgStruct(999, false);
+    m1->addChars(4);
+}
+
+bool canHandleMsg() {
+    if (bufferSize < 5) {
+        return false;
+    }
+    string data = string(buffer);
+    if (data.size() < 5) {
+        return false;
+    }
+    data = data.substr(2);
+    string rawMsgID = data.substr(0, 3);
+    int msgID = atoi(rawMsgID.c_str());
+    if (inMsgStructs.find(msgID) != inMsgStructs.end()) {
+        return inMsgStructs[msgID]->canHandle(data);
+    }
+    cout << "Message ID does not exist.";
+    return false;
+}
+
+MsgStruct* readPacket() {
+    string data = string(buffer).substr(0,bufferSize);
+    int msgID = atoi(data.substr(2,3).c_str());
+    return inMsgStructs[msgID]->fillFromData();
+}
+
 MsgStruct* createMsgStruct(int msgID, bool outgoing) {
     MsgStruct* packet = new MsgStruct(msgID);
     if (outgoing) {
-        outMsgStructs.push_back(packet);
+        outMsgStructs[msgID] = packet;
     } else {
-        inMsgStructs.push_back(packet);
+        inMsgStructs[msgID] = packet;
     }
     return packet;
+}
+
+MsgStruct* newPacket(int msgID) {
+    return outMsgStructs[msgID]->reset();
 }
 
 int send(string buffer) {

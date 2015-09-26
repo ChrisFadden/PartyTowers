@@ -16,15 +16,16 @@ class MsgStruct {
 
         MsgStruct* reset();
         int size();
-        bool canHandle(char*);
+        bool canHandle(string);
         string read();
         int readInt();
-        MsgStruct* fillFromData(char*);
+        MsgStruct* fillFromData();
         MsgStruct* write(string);
         bool readyToSend();
         string getData(); 
         MsgStruct* addChars(int);
-        MsgStruct* addString();  
+        MsgStruct* addString();
+        int getMsgID();  
 
     private:
         int msgID;
