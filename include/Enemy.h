@@ -1,10 +1,9 @@
 #ifndef _ENEMY_H
 #define _ENEMY_H
 #include "GameObject.h"
-
+#include <utility>
 class Enemy : public GameObject {
  public:
-  Enemy(int, int, bool, int);  // Default Constructor
 
   void setSpeed(int);  // Function for setting enemy speed
   int getSpeed();  // Function for getting enemy speed
@@ -14,13 +13,17 @@ class Enemy : public GameObject {
 
   void setAlive(bool);  // Function for setting enemy life status
   bool getAlive();  // Function for getting enemy life status
+	
+  void setPosition(int, int);
+  std::pair<int, int> getPosition();
 
-  void setWave(int);  // Function for setting level of enemy
-  int getWave();  // Function for getting level of enemy
+  int wave;
+
  private:
+  int x;
+  int y;
   int speed;
   int health;
   bool isAlive;
-  int wave;
 };
 #endif

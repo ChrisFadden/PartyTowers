@@ -1,12 +1,7 @@
 #include "Enemy.h"
 #include "Level.h"
 
-Enemy::Enemy(int Speed, int Health, bool IsAlive, int Wave) {
-  speed = Speed;
-  health = Health;
-  isAlive = IsAlive;
-  wave = Wave;
-}
+using namespace std;
 
 void Enemy::setSpeed(int Speed) { speed = Speed; }
 
@@ -20,7 +15,16 @@ void Enemy::setAlive(bool IsAlive) { isAlive = IsAlive; }
 
 bool Enemy::getAlive() { return isAlive; }
 
-void Enemy::setWave(int Wave) { wave = Wave; }
+void Enemy::setPosition(int X, int Y) {
+	x = X;
+	y = Y;
+}
 
-int Enemy::getWave() { return wave; }
+pair<int, int> Enemy::getPosition() {
+	pair<int, int> position;
+	position.first = x;
+	position.second =y;
+	return position;
+}
+
 

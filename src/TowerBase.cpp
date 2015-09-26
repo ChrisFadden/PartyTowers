@@ -1,7 +1,7 @@
 #include "TowerBase.h"
 
-TowerBase::TowerBase(int Health, bool IsAlive, int Wave) {
-  health = Health;
+TowerBase::TowerBase(bool IsAlive, int Wave) {
+  health = 100;
   isAlive = IsAlive;
   wave = Wave;
 }
@@ -14,6 +14,10 @@ void TowerBase::setAlive(bool IsAlive) { isAlive = IsAlive; }
 
 bool TowerBase::getAlive() { return isAlive; }
 
-void TowerBase::setWave(int Wave) { wave = Wave; }
+void TowerBase::setWave(int Wave) { 
+	wave = Wave;
+	if (wave % 5) {
+		setHealth((health + 20));
+	}
+}
 
-int TowerBase::getWave() { return wave; }

@@ -1,70 +1,40 @@
 #include <iostream>
 #include "Tower.h"
 
-/********************
- * Constructors
- *******************/
-// Default Constructor, with usuable values
-Tower::Tower() {
-  range = 5;
-  power = 1;
-  isAlive = true;
-}
-
-// Constructor with Location
-Tower::Tower(int i, int j) {
-  x = i;
-  y = j;
-}
-
-// Constructor with Location and Range
-Tower::Tower(int i, int j, int r) {
-  x = i;
-  y = j;
-  range = r;
-}
-
-// Constructor with Location, Range, and Power
-Tower::Tower(int i, int j, int r, int p) {
-  x = i;
-  y = j;
-  range = r;
-  power = p;
-}
-
+using namespace std;
 /***********************
  * Get and Set Functions
  **********************/
-void Tower::SetRange(int r) { range = r; }
+void Tower::setRange(int r) { range = r; }
+int Tower::getRange() { return range; }
 
-int Tower::GetRange() { return range; }
+void Tower::setPower(int p) { power = p;}
+int Tower::getPower() { return power; }
 
-void Tower::SetPower(int p) { power = p; }
+void Tower::setSpeed(int s) { speed = s; }
+int Tower::getSpeed() { return speed; }
 
-int Tower::GetPower() { return power; }
+void Tower::setCost(int c) { cost = c; }
+int Tower::getCost() { return cost; }
 
-bool Tower::GetAlive() { return isAlive; }
+void Tower::setUpgrade(int u) { upgradeCost = u; }
+int Tower::getUpgrade() { return upgradeCost; }
 
-void Tower::SetAlive(bool alive) { isAlive = alive; }
+void Tower::setSell(int S) { sellValue = S; }
+int Tower::getSell() { return sellValue; }
 
-void Tower::SetSpeed(int p) { speed = p; }
+void Tower::setPosition(int X, int Y){
+	x = X;
+	y = Y;
+}
 
-int Tower::GetSpeed() { return speed; }
+pair<int, int> Tower::getPosition() { 
+	pair<int, int > position; 
+	position.first = x;
+	position.second = y;
+	return position;
+}
 
-void Tower::SetCost(int p) { cost = p; }
 
-int Tower::GetCost() { return cost; }
-
-void Tower::SetUpgrade(int p) { upgradeCost = p; }
-
-int Tower::GetUpgrade() { return upgradeCost; }
-
-void Tower::SetSell(int p) { sellValue = p; }
-
-int Tower::GetSell() { return sellValue; }
-
-void Tower::SetLevel(int p) { level = p; }
-
-int Tower::GetLevel() { return level; }
 
 
