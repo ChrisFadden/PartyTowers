@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_net.h>
+#include <SDL_image.h>
 #include <string>
 
 using namespace std;
@@ -55,6 +56,7 @@ int main() {
   bool waiting = true;
   char buffer[512];
   while (waiting) {
+
     if (SDLNet_TCP_Recv(sock, buffer, 512) > 0) {
       waiting = false;
       cout << buffer;
@@ -63,6 +65,8 @@ int main() {
 
   send("9990000");
 
+  //Create Renderer
+  SDL_Renderer* renderer = SDL_CreateWindow(window, -1, SDL_RENDERER_SOFTWARE);
   SDL_FillRect(screenSurface, NULL,
                SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
 
@@ -70,6 +74,8 @@ int main() {
   bool running = true;
   int k = 0;
   Uint32 ctime = SDL_GetTicks();
+  //Main Game Loop
+  int wave = 1;
   while (running) {
     SDL_UpdateWindowSurface(window);
 
@@ -95,6 +101,11 @@ int main() {
       ctime = SDL_GetTicks();
       cout << "\n";
     }
+    
+    //Drawing code
+    SDL_RenderClear(renderer);
+    //For each object, get image, draw, SDL_RenderCopy
+    SDL_RenderPresent(renderer);
   }
 
   SDL_FreeSurface(screenSurface);
