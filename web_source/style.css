@@ -33,13 +33,17 @@ ul {
 }
 
 #notify {
+    margin-left: 5px;
+}
+#notify2 {
+    margin-left: 5px;
 }
 
 #game {
     position: absolute;
     left: 0;
     right: 0;
-    top: 24px;
+    top: 64px;
     bottom: 0;
     padding: 0;
     margin: 0;
@@ -78,13 +82,13 @@ ul {
 
 #leftBtn {
     position: absolute;
-    left: 58px;
+    left: 57px;
     top: 102px;
 }
 
 #rightBtn {
     position: absolute;
-    right: 56px;
+    left: 263px;
     top: 102px;
 }
 
@@ -135,6 +139,11 @@ ul {
     position: absolute;
     left: 200px;
     top: 11px;
+}
+
+#back {
+    margin-top: 10px;
+    margin-left: 20px;
 }
 
 button {
