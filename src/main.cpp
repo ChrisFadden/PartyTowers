@@ -228,14 +228,14 @@ int main() {
                 // Attempt to place towerType
                 // here
 				if ( towerType == 1) {
-					if ( (getPlayerbyID(pID)->getMoney()) < 50) {
+					if ( (getPlayerbyID(pID)->getMoney()) >= 50) {
                 		addTower(pID, towerType, renderer);
 						getPlayerbyID(pID)->addMoney(-50);
 					} else { 
 						return 0;
 					}					
 				} else {
-					if ( (getPlayerbyID(pID)->getMoney()) < 100) {
+					if ( (getPlayerbyID(pID)->getMoney()) >= 100) {
 							addTower(pID, towerType, renderer);
 							getPlayerbyID(pID)->addMoney(-100);
 					} else {
@@ -569,7 +569,7 @@ Player* getPlayerbyID(int id) {
 void addPlayerbyID(int id, SDL_Renderer* r) {
     auto it = listPlayers.find(id);
     if (it == listPlayers.end()) {
-        Player* p = new Player(id, 0, 0, &lvl1);
+        Player* p = new Player(id, 0, 100, &lvl1);
         p->loadImg(r);
         listPlayers.emplace(id, p);
     }
