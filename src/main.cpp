@@ -7,6 +7,7 @@
 #include <MsgStruct.h>
 #include "Player.h"
 #include "GameObject.h"
+#include "Enemy.h"
 #include "Cursor.h"
 #include "Tower.h"
 #include <unordered_map>
@@ -36,12 +37,10 @@ map<int, MsgStruct*> inMsgStructs;
 
 string roomCode;
 
-vector<GameObject*> listObj;
 vector<Tower*> listTower;
 vector<Enemy*> listEnemy;
 unordered_map<int,Player*> listPlayers;
 Level lvl1(640, 480);
-
 
 //User IO functions to be called from networking code?
 Player* getPlayerbyID(int id);
