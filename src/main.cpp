@@ -277,6 +277,9 @@ int main() {
             int num = rand() % lvl1.getNumPaths();
             soldier->setPath(lvl1.getPath(num));
             enemySpawn = enemyRegen;
+            if (enemyRegen > 60) {
+                enemyRegen -= 10;
+            }
         } else {
             enemySpawn -= 1;
         }
