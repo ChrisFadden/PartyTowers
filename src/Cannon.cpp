@@ -7,6 +7,8 @@ Cannon::Cannon(int X, int Y, int Level) {
 	setCost(5);
 	setUpgrade(5);
 	setSell(0.5 * Level * 5);
+    setRange(96);
+    setTimeout(120);
 	level = Level;
 }
 

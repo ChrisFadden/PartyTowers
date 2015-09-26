@@ -13,6 +13,7 @@ class GameObject {
   ~GameObject();
   int getX();
   int getY();
+  std::pair<int,int> getPosition();
   virtual void setX(int x);
   virtual void setY(int y);
   virtual void setPos(int nx, int ny);

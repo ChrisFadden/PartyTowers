@@ -21,7 +21,7 @@ $(document).ready(function() {
 
     $("#login").click(function() {
         startConnection();
-            });
+    });
 
     // This interval can be used for anything, but it currently only handles incoming messaged.
     setInterval(gameLoop, 15);
@@ -144,6 +144,7 @@ function handleNetwork() {
         if (t == "1") {
             $("#buttons").hide();
             $("#towers").show();
+            $("#notify").text("Select a tower.");
         } else {
             $("#notify").text("Cannot place here.");
         }
