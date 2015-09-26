@@ -1,9 +1,9 @@
 #include <iostream>
 #include "DrawableObject.h"
+#include "TextureLoader.h"
 
 DrawableObject::DrawableObject(std::string filename, SDL_Renderer* r) {
-   surface =  IMG_Load(filename.c_str());
-   img = SDL_CreateTextureFromSurface(r, surface);
+    img = TextureLoader::getInstance().loadImg(filename, r);
 }
 
 
