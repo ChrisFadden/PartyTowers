@@ -470,8 +470,8 @@ bool canHandleMsg(bool confirmed) {
     if (inMsgStructs.find(msgID) != inMsgStructs.end()) {
         return inMsgStructs[msgID]->canHandle(data);
     }
-    cout << "Message ID does not exist " <<  rawMsgID <<  "\n";
-    cout << "Data is " << buffer;
+    cout << "Message ID does not exist. Raw: " <<  rawMsgID << " Parsed: " << msgID << "\n";
+    cout << "Data is " << buffer << "\n";
     return false;
 }
 
