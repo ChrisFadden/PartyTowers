@@ -13,6 +13,7 @@ void Soldier::setWave(int Wave) {
 	wave = Wave;
 	setHealth(M_PI + (Wave / 2));
 	setSpeed(1 + (Wave / 2));
+	setMoney(50 + (Wave / 2));
 }
 
 void Soldier::loadImg(SDL_Renderer* r) {

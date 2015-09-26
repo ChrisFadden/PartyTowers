@@ -235,7 +235,22 @@ int main() {
                 cout << "Placing a tower.\n";
                 // Attempt to place towerType
                 // here
-                addTower(pID, towerType, renderer);
+				if ( towerType == 1) {
+					if ( (getPlayerbyID(pID)->getMoney()) < 50) {
+                		addTower(pID, towerType, renderer);
+						getPlayerbyID(pID)->addMoney(-50);
+					} else { 
+						return 0;
+					}					
+				} else {
+					if ( (getPlayerbyID(pID)->getMoney()) < 100) {
+							addTower(pID, towerType, renderer);
+							getPlayerbyID(pID)->addMoney(-100);
+					} else {
+						return 0;
+					}
+				}
+
 
                 MsgStruct* p = newPacket(4);
                 // Write success
@@ -367,7 +382,7 @@ int main() {
             if (b->move()) {
                 Enemy* attacked = b->getTarget();
                 attacked->setHealth(attacked->getHealth() - b->getPower());
-                b -> getSource()->addMoney(10);
+                b -> getSource()->addMoney(5);
                 if (attacked->getHealth() <= 0) {
                     b->getSource()->addMoney(attacked->getMoney());
                     attacked->setAlive(false);

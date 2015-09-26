@@ -19,6 +19,7 @@ class Enemy : public GameObject {
   void setPosition(std::pair<int, int>);
   std::pair<int, int> getPosition();
 
+  void setMoney(int);
   int getMoney();
 
   bool move();
