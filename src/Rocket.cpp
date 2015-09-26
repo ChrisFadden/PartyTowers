@@ -17,4 +17,7 @@ void Rocket::setLevel(int Level) {
 	setSell(0.666 * Level * 10);
 }
 
+void Rocket::loadImg(SDL_Renderer* r) {
+	GameObject::loadImg("./res/Rocket.png", r);
+}
 

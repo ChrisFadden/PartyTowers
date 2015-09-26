@@ -28,6 +28,8 @@ void Tower::setPosition(int X, int Y){
 	y = Y;
 }
 
+
+
 pair<int, int> Tower::getPosition() { 
 	pair<int, int > position; 
 	position.first = x;

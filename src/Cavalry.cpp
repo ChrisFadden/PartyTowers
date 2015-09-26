@@ -15,3 +15,6 @@ void Cavalry::setWave(int Wave) {
 	setSpeed(1 + (Wave / 2));
 }
 
+void Cavalry::loadImg(SDL_Renderer* r) {
+	GameObject::loadImg("./res/Cavalry.png", r);
+}

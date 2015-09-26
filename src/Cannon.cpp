@@ -17,4 +17,7 @@ void Cannon::setLevel(int Level) {
 	setSell(0.5 * Level * 5);
 }
 
+void Cannon::loadImg(SDL_Renderer* r) {
+	GameObject::loadImg("./res/Cannon.png", r);
+}
 

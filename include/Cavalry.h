@@ -6,5 +6,6 @@ class Cavalry : public Enemy {
 	public: 
 		Cavalry(int, int, int);
 		void setWave(int);
+		void loadImg(SDL_Renderer*);
 };
 #endif

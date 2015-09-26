@@ -12,6 +12,7 @@ class TowerBase : public GameObject {
   void setAlive(bool);  // Function for setting enemy life status
   bool getAlive();  // Function for getting enemy life status
 
+  void loadImg(SDL_Renderer*);
   void setWave(int);  // Function for setting level of enemy
  private:
   int health;

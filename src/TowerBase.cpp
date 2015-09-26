@@ -21,3 +21,7 @@ void TowerBase::setWave(int Wave) {
 	}
 }
 
+void TowerBase::loadImg(SDL_Renderer* r) {
+	std::string s = "./res/TowerBase.png";
+	GameObject::loadImg(s, r);
+}

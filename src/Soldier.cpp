@@ -15,3 +15,6 @@ void Soldier::setWave(int Wave) {
 	setSpeed(1 + (Wave / 2));
 }
 
+void Soldier::loadImg(SDL_Renderer* r) {
+	GameObject::loadImg("./res/Soldier.png", r);
+}
