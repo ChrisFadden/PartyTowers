@@ -150,7 +150,7 @@ int main() {
     drawPath(path2, renderer);
 
     lvl1.addPath(path);
-    //lvl1.addPath(path2);
+    lvl1.addPath(path2);
 
     for (auto floor : listFloors) {
         lvl1.addGameObject(floor);
@@ -285,10 +285,11 @@ int main() {
         /***************
          * Aiming Code
          **************/
-        Enemy* attacked = nullptr;
-        int r, radius;
-        int radiusAttacked = 10000;
+        
         for (auto t : listTower) {
+            Enemy* attacked = nullptr;
+            int r, radius;
+            int radiusAttacked = 10000;
             t->update();
             if (!(t->canFire())) {
                 continue;
