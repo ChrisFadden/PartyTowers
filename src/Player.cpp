@@ -22,7 +22,13 @@ void Player::addMoney(int dm) {
 
 int Player::getMoney() { return money; }
 
+void Player::setName(string name) {
+    this->name = name;
+}
 
+string Player::getName() {
+    return name;
+}
 
 void Player::moveUp() {
     //x,y deltas may be wrong

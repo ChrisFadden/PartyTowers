@@ -54,6 +54,9 @@ function setupMessages() {
 
     var i4 = createMsgStruct(4, true);
     i4.addChars(2);
+
+    var i10 = createMsgStruct(10, true);
+    i10.addString();
 }
 
 function startConnection() {
@@ -112,6 +115,13 @@ function startConnection() {
 }
 
 function begin() {
+
+    var packet = newPacket(10);
+    var name = $("#name").val();
+    packet.write(name);
+    packet.send();
+
+    $(".login").hide();
     $("#login").hide();
     $("#room").hide();
 

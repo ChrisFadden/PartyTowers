@@ -245,6 +245,9 @@ int main() {
                 MsgStruct* p2 = newPacket(5);
                 p2->write(to_string(getPlayerbyID(pID)->getMoney()));
                 send(p2, pID);
+            } else if (msgID == 10) {
+                string name = packet->read();
+                getPlayerbyID(pID)->setName(name);
             }
         }
 
@@ -472,6 +475,9 @@ void setupMessages() {
 
     MsgStruct* o5 = createMsgStruct(5, true);
     o5->addString();
+
+    MsgStruct* m10 = createMsgStruct(10, false);
+    m10->addString();
 }
 
 bool canHandleMsg(bool confirmed) {

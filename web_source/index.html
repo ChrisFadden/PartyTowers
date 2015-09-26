@@ -10,12 +10,19 @@
         <script src="lib/ws-client.js"></script> 
 		<script src="script.js"></script>	
         <span id="notify">Room code:</span>
+        <br/>
         <span id="notify2"></span>
-        <form action="javascript:startConnection();">
+        <form class="login" action="javascript:startConnection();">
             <input type="text" id="room">
         </form>
+        <span class="login">
+            Name:
+        </span>
+        <form class="login" action="javascript:startConnection();">
+            <input type="text" id="name">
+        </form>
 
-        <button id="login">Login</button>
+        <button id="login" class="login">Login</button>
 
         <div id="game">
             <div id="buttons">
@@ -29,13 +36,13 @@
                 <div class="tower">
                     <i class="fa fa-legal fa-3x tower-icon"></i>
                     <span class="tower-label">Cannons</span>
-                    <span class="tower-price">$800</span>
+                    <span class="tower-price">$50</span>
                     <button data-num="1" class="button tower-btn buyBtn" id="buyCannons">Buy</button>
                 </div>
                 <div class="tower">
                     <i class="fa fa-rocket fa-3x tower-icon"></i>
                     <span class="tower-label">Rockets</span>
-                    <span class="tower-price">$1000</span>
+                    <span class="tower-price">$100</span>
                     <button data-num="2" class="button tower-btn buyBtn" id="buyRockets">Buy</button>
                 </div>
                
