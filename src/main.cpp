@@ -7,7 +7,9 @@
 #include <MsgStruct.h>
 #include "Player.h"
 #include "GameObject.h"
+#include "Enemy.h"
 #include "Cursor.h"
+#include "Tower.h"
 #include <unordered_map>
 
 using namespace std;
@@ -35,10 +37,10 @@ map<int, MsgStruct*> inMsgStructs;
 
 string roomCode;
 
-vector<GameObject*> listObj;
+vector<Tower*> listTower;
+vector<Enemy*> listEnemy;
 unordered_map<int,Player*> listPlayers;
 Level lvl1(640, 480);
-
 
 //User IO functions to be called from networking code?
 Player* getPlayerbyID(int id);
@@ -139,29 +141,15 @@ int main() {
         if (ready > 0 && SDLNet_SocketReady(sock)) {
             int s = SDLNet_TCP_Recv(sock, buffer+bufferSize, 512);
             if (s > 0) {
-                bufferSize += s;
-                /*               
-                   cout << "\nData: \n";
-                   cout << buffer;
-                   cout << "\n"; 
-                   */
-                   
+                bufferSize += s;                  
             }
         }
 
         if (canHandleMsg(confirmed)) {
-            //cout << "We have a message!\n";
             MsgStruct* packet = readPacket(confirmed);
             int pID = packet->getPID();
             int msgID = packet->getMsgID();
-            /*
-            cout << "Player ID: ";
-            cout << packet->getPID();
-            cout << "\n";
-            cout << "Msg ID: ";
-            cout << msgID;
-            cout << "\n";
-            */
+           
             if (msgID == 999) {
                 confirmed = true;
                 roomCode = packet->read();
@@ -172,8 +160,7 @@ int main() {
             } else if (msgID == 2) {
                 string dir = packet->read();
                 // We have pID and dir
-                // dir is l, r, u, or d
-                Player* p = getPlayerbyID(pID);
+                 Player* p = getPlayerbyID(pID);
                 if(dir == "l") {
                     p->moveLeft();
                 } else if (dir == "r") {
@@ -233,6 +220,16 @@ int main() {
             SDL_Texture* t = p->getTexture();
             SDL_RenderCopy(renderer, t, NULL, &txr);
         }
+       
+        for(auto t : listTower)
+        {
+
+
+        }
+
+
+
+
         //SDL_RenderCopy(renderer, t, NULL, &txr);
         SDL_RenderPresent(renderer);
 

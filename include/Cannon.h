@@ -6,5 +6,6 @@ class Cannon : public Tower {
 	public:
 		Cannon(int, int, int);
 		void setLevel(int);
+		void loadImg(SDL_Renderer*);
 };
 #endif

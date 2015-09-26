@@ -27,6 +27,7 @@ class Tower : public GameObject {
   void setPosition(int, int);
   std::pair<int, int> getPosition();
 
+
   int level;
  private:
   int x;
