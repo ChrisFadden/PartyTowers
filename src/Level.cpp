@@ -27,7 +27,7 @@ void Level::addGameObject(GameObject* gobj) {
     std::pair<int, int> gobj_pos(x, y);
 
     if (occupied_tiles.find(gobj_pos) == occupied_tiles.end()) {
-        std::cout << "Position is open!!!!!!!!!!!!!!\n";
+        //std::cout << "Position is open!!!!!!!!!!!!!!\n";
         occupied_tiles.insert(gobj_pos);
         drawables.insert(gobj);
     } else {

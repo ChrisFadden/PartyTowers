@@ -19,7 +19,7 @@ SDL_Texture* TextureLoader::loadImg(std::string name, SDL_Renderer* r) {
         ret = SDL_CreateTextureFromSurface(r, surface);
         imgs.emplace(name, ret);
     } else {
-        std::cout << "IMAGE ALREADY LOADED!\n";
+        //std::cout << "IMAGE ALREADY LOADED!\n";
         ret = it->second;
     }
 
