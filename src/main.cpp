@@ -590,7 +590,7 @@ Player* getPlayerbyID(int id) {
 void addPlayerbyID(int id, SDL_Renderer* r) {
     auto it = listPlayers.find(id);
     if (it == listPlayers.end()) {
-        Player* p = new Player(id, 0, 100, &lvl1);
+        Player* p = new Player(id, &lvl1);
         p->loadImg(r);
         listPlayers.emplace(id, p);
     }

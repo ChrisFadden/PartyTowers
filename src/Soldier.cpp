@@ -6,6 +6,7 @@ Soldier::Soldier(int Wave, int X, int Y) {
 	setHealth(M_PI + (Wave / 2));
 	setSpeed( 1 + (Wave / 2));
 	setAlive(true);
+	setMoney(50 + (Wave / 2));
 	wave = Wave;
 }
 
