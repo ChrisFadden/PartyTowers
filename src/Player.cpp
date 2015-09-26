@@ -22,22 +22,22 @@ int Player::getMoney() { return money; }
 
 void Player::moveUp() {
     //x,y deltas may be wrong
-    lvl->moveCursor(cursor, 0, -1);
+    lvl->moveCursor(cursor, 0, -32);
 }
 
 void Player::moveDown() {
     //x,y deltas may be wrong
-    lvl->moveCursor(cursor, 0, 1);
+    lvl->moveCursor(cursor, 0, 32);
 }
 
 void Player::moveLeft() {
     //x,y deltas may be wrong
-    lvl->moveCursor(cursor, -1, 0);
+    lvl->moveCursor(cursor, -32, 0);
 }
 
 void Player::moveRight() {
     //x,y deltas may be wrong
-    lvl->moveCursor(cursor, 1, 0);
+    lvl->moveCursor(cursor, 32, 0);
 }
 
 std::pair<int,int> Player::getPos() {

@@ -174,10 +174,8 @@ int main() {
                 // dir is l, r, u, or d
                 Player* p = getPlayerbyID(pID);
                 if(dir == "l") {
-                    cout << "LEFT!!!\n";
                     p->moveLeft();
                 } else if (dir == "r") {
-                    cout << "RIGHT!!!\n";
                     p->moveRight();
                 } else if (dir == "u") {
                     p->moveUp();
