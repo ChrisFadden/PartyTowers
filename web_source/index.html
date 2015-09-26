@@ -9,7 +9,6 @@
 	<body>
         <script src="lib/ws-client.js"></script> 
 		<script src="script.js"></script>	
-        <h5>PyWebPlug Login</h5>
         <span id="notify">Room code:</span>
         <form action="javascript:startConnection();">
             <input type="text" id="room">
@@ -24,6 +23,24 @@
                 <div class="arrowBtn" id="rightBtn"><i class="fa fa-arrow-right fa-3x"></i></div>
                 <div class="arrowBtn" id="downBtn"><i class="fa fa-arrow-down fa-3x"></i></div>
                 <div class="arrowBtn" id="placeBtn"><i class="fa fa-dot-circle-o fa-3x"></i></div>
+            </div>
+            <div id="towers">
+                <div class="tower" id="towerOne">
+                    <i class="fa fa-rocket fa-3x tower-icon"></i>
+                    <span class="tower-label">Rockets</span>
+                    <span class="tower-price">$1000</span>
+                    <button data-num="1" class="button tower-btn buyBtn" id="buyRockets">Buy</button>
+                </div>
+                 <div class="tower" id="towerTwo">
+                    <i class="fa fa-magic fa-3x tower-icon"></i>
+                    <span class="tower-label">Lasers</span>
+                    <span class="tower-price">$1200</span>
+                    <button data-num="2" class="button tower-btn buyBtn" id="buyLasers">Buy</button>
+                </div>
+
+                <button id="back">
+                    Go Back
+                </button>
             </div>
         </div>
 	</body>

@@ -8,7 +8,12 @@ $(document).ready(function() {
    // Setup our message objects (packets)
     setupMessages();
 
-    $("#room").val("EPXX");
+    $("#room").val("");
+
+    $("#back").click(function() {
+        $("#towers").hide();
+        $("#buttons").show();
+    });
 
     $("#room").on('input', function() {
         $("#room").val($("#room").val().toUpperCase());
@@ -16,10 +21,7 @@ $(document).ready(function() {
 
     $("#login").click(function() {
         startConnection();
-        $("#login").hide();
-        $("#room").hide();
-        $("#notify").text("Connecting...");
-    });
+            });
 
     // This interval can be used for anything, but it currently only handles incoming messaged.
     setInterval(gameLoop, 15);
@@ -32,8 +34,13 @@ function setupMessages() {
     // This packet will be carrying two chars
     
     var m3 = createMsgStruct(3, false);
-    m3.addChars(2);
+    m3.addChars(1);
 
+    var m4 = createMsgStruct(4, false);
+    m4.addChars(1);
+
+    var m5 = createMsgStruct(5, false);
+    m5.addString();
 
     // Outgoing MSG_LOGIN
     var i1 = createMsgStruct(MSG_LOGIN, true);
@@ -44,7 +51,9 @@ function setupMessages() {
     i2.addChars(1);
 
     var i3 = createMsgStruct(3, true);
-    i3.addChars(2);
+
+    var i4 = createMsgStruct(4, true);
+    i4.addChars(2);
 }
 
 function startConnection() {
@@ -55,8 +64,12 @@ function startConnection() {
         packet.write($("#room").val());
         // and then we send the packet!
         packet.send();
+        $("#login").hide();
+        $("#room").hide();
+
         $("#notify").text("Connected!");
         $("#game").show();
+        $("#towers").hide();
     }
 
     // This will be called when the connection is closed
@@ -86,11 +99,23 @@ function startConnection() {
     });
     $("#placeBtn").click(function() {
         var packet = newPacket(3);
-        packet.write("55");
         packet.send();
     });
+
+    $(".buyBtn").click(function() {
+        var packet = newPacket(4);
+        var val = $(this).data("num");
+        packet.write(val);
+        packet.send();
+        $("#back").click();
+    });
+
     // Start the connection!
-    wsconnect("ws://localhost:8886", onopen, onclose);
+    $("#notify").text("Connecting...");
+    wsconnect("ws://128.61.27.41:8886", onopen, onclose);
+}
+
+function begin() {
 }
 
 // This function handles incoming packets
@@ -110,10 +135,25 @@ function handleNetwork() {
     // And handle it!
     if (msgID === MSG_LOGIN) {
         var pid = packet.read();
-        alert("You are client number " + pid);
+        $("#notify").text("You are client number " + pid);
     } else if (msgID === 3) {
         var t = packet.read();
-        alert(t);
+        if (t == "1") {
+            $("#buttons").hide();
+            $("#towers").show();
+        } else {
+            $("#notify").text("Cannot place here.");
+        }
+    } else if (msgID === 4) {
+        var t = packet.read();
+        if (t === "1") {
+            $("#notify").text("Tower placed!");
+        } else {
+            $("#notify").text("Could not place tower.");
+        }
+    } else if (msgID === 5) {
+        var money = packet.read();
+        $("#money").text("Points: "+money);
     }
 }
 

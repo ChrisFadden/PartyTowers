@@ -186,9 +186,19 @@ int main() {
                     cout << "error, direction: " << dir << "\n";
                 }
             } else if (msgID == 3) {
-                string t = packet->read();
                 MsgStruct* p = newPacket(3);
-                p->write(t);
+                // Can I place a tower here? 1 yes, 0 no
+                p->write("1");
+                send(p, pID);
+            } else if (msgID == 4) {
+                string towerType = packet->read();
+                cout << "Placing a tower.\n";
+                // Attempt to place towerType
+                // here
+
+                MsgStruct* p = newPacket(4);
+                // Write success
+                p->write("1");
                 send(p, pID);
             }
         }
@@ -249,10 +259,18 @@ void setupMessages() {
     m2->addChars(1);
 
     MsgStruct* m3 = createMsgStruct(3, false);
-    m3->addChars(2);
 
     MsgStruct* o3 = createMsgStruct(3, true);
-    o3->addChars(2);
+    o3->addChars(1);
+
+    MsgStruct* m4 = createMsgStruct(4, false);
+    m4->addChars(2);
+
+    MsgStruct* o4 = createMsgStruct(4, true);
+    o4->addChars(1);
+
+    MsgStruct* o5 = createMsgStruct(5, true);
+    o5->addString();
 }
 
 bool canHandleMsg(bool confirmed) {

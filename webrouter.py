@@ -30,6 +30,7 @@ class Client:
                 print("Trying to find host", code)
                 self.host = findHost(code)
                 if self.host:
+                    print("Found host.")
                     self.confirm()
         else:
             if self.host.socket:
@@ -113,7 +114,6 @@ def findHost(code):
     return None
 
 def newHostCode():
-    return "EPXX";
     chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     code = ''.join(chars[int(random.random()*26)] for _ in range(4))
     if findHost(code):
