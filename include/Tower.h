@@ -2,6 +2,9 @@
 #define _TOWER_H
 #include <utility>
 #include "GameObject.h"
+#include "Tower.h"
+#include "Player.h"
+
 class Tower : public GameObject {
  public:
   
@@ -27,6 +30,8 @@ class Tower : public GameObject {
   void setPosition(int, int);
   std::pair<int, int> getPosition();
 
+  void setPlayer(Player* pin);
+
 
   int level;
  private:
@@ -38,6 +43,7 @@ class Tower : public GameObject {
   int cost;
   int upgradeCost;
   int sellValue;
+  Player* p;
   
 };
 #endif

@@ -10,6 +10,8 @@
 #include "Enemy.h"
 #include "Cursor.h"
 #include "Tower.h"
+#include "Cannon.h"
+#include "Rocket.h"
 #include <unordered_map>
 
 using namespace std;
@@ -45,6 +47,7 @@ Level lvl1(640, 480);
 // User IO functions to be called from networking code?
 Player* getPlayerbyID(int id);
 void addPlayerbyID(int id, SDL_Renderer* r);
+void addTower(int id, int type, SDL_Renderer* r);
 
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
@@ -180,10 +183,11 @@ int main() {
                 p->write("1");
                 send(p, pID);
             } else if (msgID == 4) {
-                string towerType = packet->read();
+                int towerType = packet->readInt();
                 cout << "Placing a tower.\n";
                 // Attempt to place towerType
                 // here
+                addTower(pID, towerType, renderer);
 
                 MsgStruct* p = newPacket(4);
                 // Write success
@@ -221,22 +225,30 @@ int main() {
                     attacked = e;
                 }
             }  // end of enemy loop
-            attacked->setHealth(attacked->getHealth() - t->getPower());
+            if(attacked)
+                attacked->setHealth(attacked->getHealth() - t->getPower());
         }  // end of tower loop
 
         // Drawing code
         SDL_RenderClear(renderer);
-        // For each path item, draw
-        // For each base tower, draw
-        // For each object, get image, draw, SDL_RenderCopy
-        SDL_Texture* t = go1.draw();
         SDL_Rect txr;
-        // img position
-        txr.x = 0;
-        txr.y = 0;
         // img size
         txr.w = 32;
         txr.h = 32;
+        // For each path item, draw
+        // For each base tower, draw
+        for (auto it : listTower) {
+            Tower* t = it;
+            pair<int, int> tower_pos = t->getPosition();
+            txr.x = tower_pos.first;
+            txr.y = tower_pos.second;
+            SDL_Texture* tx = t->draw();
+            if(!tx) {
+                std::cout << "ERROR, tx is NULL!!!";
+            }
+            SDL_RenderCopy(renderer, tx, NULL, &txr);
+        }
+        
         // For each player, get cursor, draw
         for (auto it : listPlayers) {
             Player* p = it.second;
@@ -365,4 +377,31 @@ void addPlayerbyID(int id, SDL_Renderer* r) {
         p->loadImg(r);
         listPlayers.emplace(id, p);
     }
+}
+
+void addTower(int id, int type, SDL_Renderer* r) {
+    Player* p = getPlayerbyID(id);
+    if(p == nullptr) {
+        return;
+    }
+
+    auto pos = p->getPos();
+    int x = pos.first;
+    int y = pos.second;
+    std::cout << "x,y " << x << "," << y << "\n";
+    Tower* t;
+    std::cout << type << "\n";
+    if(type == 1) {
+        std::cout << "MAKING A CANNON!!\n";
+        Cannon* cannon = new Cannon(x,y,1);
+        cannon->loadImg(r);
+        t = cannon;
+    } else {
+        std::cout << "MAKING A ROCKET!!\n";
+        Rocket* rocket = new Rocket(x,y,1);
+        rocket->loadImg(r);
+        t = rocket;
+    }
+    t->setPlayer(p);
+    listTower.push_back(t);
 }

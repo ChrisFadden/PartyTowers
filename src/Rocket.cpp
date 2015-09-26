@@ -18,6 +18,6 @@ void Rocket::setLevel(int Level) {
 }
 
 void Rocket::loadImg(SDL_Renderer* r) {
-	GameObject::loadImg("./res/Rocket.png", r);
+	GameObject::loadImg("./res/RocketTower.png", r);
 }
 

@@ -39,4 +39,6 @@ pair<int, int> Tower::getPosition() {
 
 
 
-
+void Tower::setPlayer(Player* pin) {
+   p = pin;
+}
