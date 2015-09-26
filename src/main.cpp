@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "GameObject.h"
 #include "Cursor.h"
+#include <unordered_map>
 
 using namespace std;
 
@@ -33,7 +34,12 @@ map<int, MsgStruct*> inMsgStructs;
 string roomCode;
 
 vector<GameObject*> listObj;
-vector<Player*> listPlayers;
+unordered_map<int,Player*> listPlayers;
+
+
+
+//User IO functions to be called from networking code?
+Player* getPlayerbyID(int id);
 
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
@@ -51,8 +57,6 @@ int main() {
     window = SDL_CreateWindow("Party Towers", SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
             SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-
-    screenSurface = SDL_GetWindowSurface(window);
 
     int flag = IMG_INIT_PNG;
     if ((IMG_Init(flag)&flag) != flag) {
@@ -94,21 +98,18 @@ int main() {
             }
         }
     }
+    
     send("9990000");
 
     //Create Renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-
+    printf("This is what happens when Marcus writes a renderer %s\n",SDL_GetError());
     if (renderer) {
         cout << "It works!\n";
     }
 
-    SDL_FillRect(screenSurface, NULL,
-            SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-
-
     //Testing Images
-    Player p1("marx bros", 0, 0);
+    Player p1(0, 0, 0, nullptr);
     Cursor c1;
     GameObject go1;
     go1.loadImg("./res/BaseTower.png", renderer);
@@ -183,8 +184,10 @@ int main() {
         //For each object, get image, draw, SDL_RenderCopy
         SDL_Texture* t = go1.draw();
         SDL_Rect txr;
+        //img position
         txr.x = 0;
         txr.y = 0;
+        //img size
         txr.w = 32;
         txr.h = 32;
         SDL_RenderCopy(renderer, t, NULL, &txr);
@@ -271,4 +274,13 @@ int send(string buffer) {
         exit(EXIT_FAILURE);
     }
     return 0;
+}
+
+
+Player* getPlayerbyID(int id) {
+    auto it = listPlayers.find(id);
+    if(it != listPlayers.end()) {
+        return it->second;
+    }
+    return nullptr;
 }

@@ -3,7 +3,7 @@
 
 #include "GameObject.h"
 
-class Cursor : GameObject {
+class Cursor : public GameObject {
  public:
   Cursor();
 };
