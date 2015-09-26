@@ -53,6 +53,13 @@ int Tower::GetPower(){
   return power;
 }
 
+bool Tower::GetAlive(){
+	return isAlive;
+}
+
+void Tower::SetAlive(bool alive){
+	isAlive = alive;
+}
 
 
 
