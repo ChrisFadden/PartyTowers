@@ -68,7 +68,7 @@ int main() {
     
     GameSound game_audio;
     
-    game_audio.PlaySound("./res/Wilhelm.wav"); 
+    game_audio.PlaySound("./res/BackgroundMusic.wav"); 
     // The window we'll be rendering to
     SDL_Window* window = NULL;
     // The surface contained by the window
@@ -160,7 +160,7 @@ int main() {
 
     int enemyRegen = 5 * 60;
     int enemySpawn = 20 * 60;
-
+   game_audio.PlaySound("./res/Wilhelm.wav"); 
     while (running) {
         SDL_UpdateWindowSurface(window);
 
