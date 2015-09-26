@@ -112,6 +112,16 @@ MsgStruct* MsgStruct::fillFromData(bool confirmed) {
         count++; 
     }
     bufferSize -= ind;
+    if (bufferSize > 0) {
+        for (int i=bufferSize-1; i>=0; i--) {
+            buffer[i+2] = buffer[i];
+        }
+        string sID = extend(pID, 2);
+        buffer[0] = (sID.at(0));
+        buffer[1] = (sID.at(1));
+        bufferSize += 2;
+        //cout << "Buffer too big. Broken to " << buffer << "\n";
+    }
     /*
     cout << "New buffer: " + string(buffer) + "\n";
     cout << "New buffer size: ";

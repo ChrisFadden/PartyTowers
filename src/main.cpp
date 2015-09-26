@@ -227,26 +227,27 @@ int main() {
                 //cout << "Placing a tower.\n";
                 // Attempt to place towerType
                 // here
+                string out = "1";
 				if ( towerType == 1) {
 					if ( (getPlayerbyID(pID)->getMoney()) >= 50) {
                 		addTower(pID, towerType, renderer);
 						getPlayerbyID(pID)->addMoney(-50);
 					} else { 
-						return 0;
+						out = "0";
 					}					
 				} else {
 					if ( (getPlayerbyID(pID)->getMoney()) >= 100) {
 							addTower(pID, towerType, renderer);
 							getPlayerbyID(pID)->addMoney(-100);
 					} else {
-						return 0;
+						out = "0";
 					}
 				}
 
 
                 MsgStruct* p = newPacket(4);
                 // Write success
-                p->write("1");
+                p->write(out);
                 send(p, pID);
 
                 MsgStruct* p2 = newPacket(5);
