@@ -14,6 +14,7 @@
 #include "Rocket.h"
 #include "Path.h"
 #include "Soldier.h"
+#include "Sound.h"
 #include <unordered_map>
 
 using namespace std;
@@ -54,13 +55,13 @@ void addTower(int id, int type, SDL_Renderer* r);
 int init();
 
 int main() {
-    if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+    if (SDL_Init(SDL_INIT_VIDEO) || SDL_Init(SDL_INIT_AUDIO) == -1) {
         std::cout << "ERROR, SDL_Init\n";
         return -1;
     }
 
     cout << "SDL2 loaded.\n";
-
+    PlaySound("./res/Flight.wav"); 
     // The window we'll be rendering to
     SDL_Window* window = NULL;
     // The surface contained by the window
