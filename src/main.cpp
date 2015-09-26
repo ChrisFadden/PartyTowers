@@ -203,8 +203,9 @@ int main() {
         /***************
          * Aiming Code
          **************/
-        Enemy attacked;
-        int r, radius; 
+        Enemy* attacked;
+        int r, radius;
+        int radiusAttacked = 10000;
         for (auto t : listTower) {
             for (auto e : listEnemy) {
                 r = t->getRange();
@@ -214,11 +215,13 @@ int main() {
                                   (epair.first - tpair.first) +
                               (epair.second - tpair.second) *
                                   (epair.second - tpair.second));
-                if(radius < r)
+                if(radius < r && radius < radiusAttacked)
                 {
-                    attacked = *e;
+                    radiusAttacked = radius;
+                    attacked = e;
                 }
             }  // end of enemy loop
+            attacked->setHealth(attacked->getHealth() - t->getPower());
         }  // end of tower loop
 
         // Drawing code
