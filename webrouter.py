@@ -67,22 +67,38 @@ class Host:
         self.pID = 0
         self.socket.send("999" + str(self.hostCode))
 
+        self.writingTo = 0
+
+        self.data = ""
+
     def getNextpID(self):
         self.pID += 1
         return self.pID
 
     def handle(self):
-        data = self.socket.readRaw()
-        if len(data) == 0:
+        self.data += self.socket.readRaw()
+        if len(self.data) == 0:
             return
-        pID = int(data[0:2])
+        ind = self.data.find("*")
+        if (ind < 0):
+            return
+        if self.writingTo == 0:
+            try:
+                self.writingTo = int(self.data[0:2])
+            except:
+                self.data = self.data[1:]
+                self.handle()
+                return;
+        pID = self.writingTo
         if self.players[pID]:
             if self.players[pID].socket:
-                self.players[pID].socket.send(data[2:].rstrip())
+                self.players[pID].socket.send(self.data[2:ind].rstrip())
             else:
                 print("Client's socket is closed.")
         else:
             print("Host", self.hostCode," tried to send a messaged to non-existant player", pID)
+        self.data = self.data[ind+1:]
+        self.writingTo = 0
         
     def disconnect(self):
         print("Lost host.")
