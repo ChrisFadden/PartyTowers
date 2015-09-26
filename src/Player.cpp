@@ -1,9 +1,9 @@
 #include "Player.h"
 
-Player::Player(int PlayerID, int Score, int Money, Level* l) {
+Player::Player(int PlayerID, Level* l) {
   playerID = PlayerID;
-  score = Score;
-  money = Money;
+  score = 0;
+  money = 100;
   cursor = new Cursor();
   lvl = l;
 }
