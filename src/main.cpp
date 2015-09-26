@@ -44,6 +44,7 @@ int main() {
   window = SDL_CreateWindow("Party Towers", SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                             SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+  
   screenSurface = SDL_GetWindowSurface(window);
     
   int flag = IMG_INIT_PNG;
