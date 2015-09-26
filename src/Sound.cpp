@@ -1,9 +1,7 @@
 #include <iostream>
 #include "Sound.h"
 
-void PlaySound(char* songName) {
-    Mix_Chunk* sound = NULL;
-    int channel;
+GameSound::GameSound() {
     int audio_rate = 22050;
     Uint16 audio_format = AUDIO_S16SYS;
     int audio_channels = 2;
@@ -12,6 +10,11 @@ void PlaySound(char* songName) {
                       audio_buffers) != 0) {
         printf("Unable to initialize audio: %s\n", Mix_GetError());
     }
+}
+
+void GameSound::PlaySound(char* songName) {
+    Mix_Chunk* sound = NULL;
+    int channel;
 
     sound = Mix_LoadWAV(songName);
     if (sound == NULL) {
@@ -22,10 +25,26 @@ void PlaySound(char* songName) {
     if (channel == -1) {
         printf("Unable to play WAV file: %s\n", Mix_GetError());
     }
-    while (Mix_Playing(channel) != 0)
-        ;
-    Mix_FreeChunk(sound);
-    Mix_CloseAudio();
-
+    
+    MixChunkVec.push_back(sound);
+    channelVec.push_back(channel);
+    
     return;
+}
+
+bool GameSound::IsPlaying(){
+   for(auto &i : channelVec)
+   {
+       if(Mix_Playing(i) != 0)
+           return true;
+   }
+   return false;
+}
+
+GameSound::~GameSound(){
+    for(auto &i : MixChunkVec)
+    {
+        Mix_FreeChunk(i);
+    }
+    Mix_CloseAudio();
 }

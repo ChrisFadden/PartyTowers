@@ -65,7 +65,10 @@ int main() {
     }
 
     cout << "SDL2 loaded.\n";
-    PlaySound("./res/Flight.wav"); 
+    
+    GameSound game_audio;
+    
+    game_audio.PlaySound("./res/Wilhelm.wav"); 
     // The window we'll be rendering to
     SDL_Window* window = NULL;
     // The surface contained by the window
