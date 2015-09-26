@@ -7,6 +7,7 @@
 #include <MsgStruct.h>
 #include "Player.h"
 #include "GameObject.h"
+#include "Enemy.h"
 #include "Cursor.h"
 #include <unordered_map>
 
@@ -35,7 +36,7 @@ map<int, MsgStruct*> inMsgStructs;
 
 string roomCode;
 
-vector<GameObject*> listObj;
+vector<Enemy*> listEnemy;
 unordered_map<int,Player*> listPlayers;
 Level lvl1(640, 480);
 
