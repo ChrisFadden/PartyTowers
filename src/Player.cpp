@@ -39,3 +39,16 @@ void Player::moveRight() {
     //x,y deltas may be wrong
     lvl->moveCursor(cursor, 1, 0);
 }
+
+std::pair<int,int> Player::getPos() {
+    return std::pair<int,int>(cursor->getX(),cursor->getY());
+}
+
+SDL_Texture* Player::getTexture() {
+    return cursor->draw();
+}
+
+void Player::loadImg(SDL_Renderer* r) {
+    std::string fn = "./res/RedRect.png";
+    cursor->loadImg(fn, r);
+}

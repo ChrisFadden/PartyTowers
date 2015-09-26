@@ -40,6 +40,7 @@ unordered_map<int,Player*> listPlayers;
 
 //User IO functions to be called from networking code?
 Player* getPlayerbyID(int id);
+void addPlayerbyID(int id);
 
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
@@ -110,7 +111,8 @@ int main() {
 
     //Testing Images
     Player p1(0, 0, 0, nullptr);
-    Cursor c1;
+    p1.loadImg(renderer);
+    listPlayers.emplace(0,&p1);
     GameObject go1;
     go1.loadImg("./res/BaseTower.png", renderer);
 
@@ -173,7 +175,14 @@ int main() {
         //img size
         txr.w = 32;
         txr.h = 32;
-        SDL_RenderCopy(renderer, t, NULL, &txr);
+        //For each player, get cursor, draw
+        for(auto it : listPlayers) {
+            Player* p = it.second;
+            pair<int,int>player_pos = p->getPos();
+            SDL_Texture* t = p->getTexture();
+            SDL_RenderCopy(renderer, t, NULL, &txr);
+        }
+        //SDL_RenderCopy(renderer, t, NULL, &txr);
         SDL_RenderPresent(renderer);
 
     }
@@ -250,4 +259,11 @@ Player* getPlayerbyID(int id) {
         return it->second;
     }
     return nullptr;
+}
+
+void addPlayerbyID(int id) {
+    auto it = listPlayers.find(id);
+    if(it == listPlayers.end()) {
+        listPlayers.emplace(id, new Player(id, 0, 0, nullptr));
+    }
 }

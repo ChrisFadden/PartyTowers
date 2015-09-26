@@ -4,6 +4,7 @@
 #include <string>
 #include "Cursor.h"
 #include "Level.h"
+#include <utility>
 
 using namespace std;
 
@@ -28,6 +29,12 @@ class Player {
   void moveDown();
   void moveLeft();
   void moveRight();
+
+
+  //other
+  std::pair<int,int> getPos();
+  void loadImg(SDL_Renderer* r);
+  SDL_Texture* getTexture();
 
 };
 #endif
