@@ -49,6 +49,6 @@ SDL_Texture* Player::getTexture() {
 }
 
 void Player::loadImg(SDL_Renderer* r) {
-    std::string fn = "./res/RedRect.png";
+    std::string fn = "./res/Cursor.png";
     cursor->loadImg(fn, r);
 }

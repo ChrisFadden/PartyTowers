@@ -33,6 +33,7 @@ int Tower::getSell() { return sellValue; }
 void Tower::setPosition(int X, int Y){
 	x = X;
 	y = Y;
+    setPos(x,y);
 }
 
 void Tower::setTimeout(int time) {

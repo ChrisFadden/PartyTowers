@@ -15,6 +15,7 @@ class Level {
   void removeGameObject(GameObject* gobj);
   void moveGameObject(GameObject* gobj, int, int);
   void moveCursor(Cursor* c, int, int);
+  bool spotOpen(int x, int y);
 
  private:
   std::set<std::pair<int, int>> occupied_tiles;
