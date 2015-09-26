@@ -36,6 +36,18 @@ void Level::addGameObject(GameObject* gobj) {
     }
 }
 
+void Level::addPath(Path* path) {
+    paths.push_back(path);
+}
+
+Path* Level::getPath(int id) {
+    return paths.at(id);
+}
+
+int Level::getNumPaths() {
+    return paths.size();
+}
+
 void Level::removeGameObject(GameObject* gobj) {
   int x = gobj->getX();
   int y = gobj->getY();
