@@ -19,13 +19,10 @@ class Client:
     
     def handle(self):
         data = self.socket.readRaw()
-        if len(data) > 0:
-            print("Data: ", data)
-        else:
+        if len(data) == 0:
             return
         if self.needsConfirmation:
             code = data[3:7]
-            print(code)
             if code == "0000":
                 print("Becoming a host!")
                 self.becomeHost()
@@ -79,9 +76,9 @@ class Host:
         if len(data) == 0:
             return
         pID = int(data[0:2])
-        if players[pID]:
-            if players[pID].socket:
-                players[pID].send(data[2:])
+        if self.players[pID]:
+            if self.players[pID].socket:
+                self.players[pID].socket.send(data[2:].rstrip())
             else:
                 print("Client's socket is closed.")
         else:

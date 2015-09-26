@@ -30,6 +30,10 @@ function setupMessages() {
     var m1 = createMsgStruct(MSG_LOGIN, false);
     m1.addChars(2);
     // This packet will be carrying two chars
+    
+    var m3 = createMsgStruct(3, false);
+    m3.addChars(2);
+
 
     // Outgoing MSG_LOGIN
     var i1 = createMsgStruct(MSG_LOGIN, true);
@@ -38,6 +42,9 @@ function setupMessages() {
 
     var i2 = createMsgStruct(2, true);
     i2.addChars(1);
+
+    var i3 = createMsgStruct(3, true);
+    i3.addChars(2);
 }
 
 function startConnection() {
@@ -57,7 +64,7 @@ function startConnection() {
         window.location.href = '/';
     }
 
-    $("#upBtn").click(function() {
+    $("#upBtn").on("click", function() {
         var packet = newPacket(2);
         packet.write("u");
         packet.send();
@@ -77,8 +84,13 @@ function startConnection() {
         packet.write("r");
         packet.send();
     });
+    $("#placeBtn").click(function() {
+        var packet = newPacket(3);
+        packet.write("55");
+        packet.send();
+    });
     // Start the connection!
-    wsconnect("ws://localhost:8886", onopen, onclose);
+    wsconnect("ws://128.61.27.41:8886", onopen, onclose);
 }
 
 // This function handles incoming packets
@@ -99,6 +111,9 @@ function handleNetwork() {
     if (msgID === MSG_LOGIN) {
         var pid = packet.read();
         alert("You are client number " + pid);
+    } else if (msgID === 3) {
+        var t = packet.read();
+        alert(t);
     }
 }
 

@@ -13,6 +13,8 @@
 using namespace std;
 
 int send(string);
+int send(MsgStruct*, int);
+int send(string, int);
 MsgStruct* createMsgStruct(int, bool);
 void setupMessages();
 MsgStruct* newPacket(int);
@@ -184,6 +186,11 @@ int main() {
                 } else {
                     cout << "error, direction: " << dir << "\n";
                 }
+            } else if (msgID == 3) {
+                string t = packet->read();
+                MsgStruct* p = newPacket(3);
+                p->write(t);
+                send(p, pID);
             }
         }
 
@@ -241,6 +248,12 @@ void setupMessages() {
 
     MsgStruct* m2 = createMsgStruct(2, false);
     m2->addChars(1);
+
+    MsgStruct* m3 = createMsgStruct(3, false);
+    m3->addChars(2);
+
+    MsgStruct* o3 = createMsgStruct(3, true);
+    o3->addChars(2);
 }
 
 bool canHandleMsg(bool confirmed) {
@@ -293,14 +306,25 @@ MsgStruct* newPacket(int msgID) {
     return outMsgStructs[msgID]->reset();
 }
 
-int send(string buffer) {
-    int len = buffer.size() + 1;
-    int out = SDLNet_TCP_Send(sock, (void*)buffer.c_str(), len);
+int send(string data) {
+    send(data, 0);
+}
+
+int send(string data, int pID) {
+    if (pID > 0) {
+        data = extend(pID, 2) + data;
+    }
+    int len = data.size() + 1;
+    int out = SDLNet_TCP_Send(sock, (void*)data.c_str(), len);
     if (out < len) {
         fprintf(stderr, "SDLNet_TCP_Send: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
     return 0;
+}
+
+int send(MsgStruct* packet, int pID) {
+    send(packet->getData(), pID);
 }
 
 
