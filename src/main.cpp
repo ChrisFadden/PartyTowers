@@ -324,24 +324,14 @@ int main() {
                     //But the base class doesn't have it, it tends to lead to code
                     //Like the following. This is not good and I will change it
                     //Sometime soon. Thanks. ~Marcus
-                    if(t->getType() == 0) {
-                        l = ((Cannon*)t)->getLevel();
-						if (((player->getMoney()) < (((Cannon*)t)->getUpgrade()))) {
-                        	((Cannon*)t)->setLevel(l+1);
-							(player->addMoney(-((Cannon*)t)->getUpgrade()));
-						} else { 
-							p->write("0");
-						}
-                    } else {
-                        l = ((Rocket*)t)->getLevel();
-						if (((player->getMoney()) < (((Rocket*)t)->getUpgrade()))) {
-                        	((Rocket*)t)->setLevel(l+1);
-							(player->addMoney(-((Rocket*)t)->getUpgrade()));
-						} else { 
-							p->write("0");
-						}
+                    l = t->level;
+                    if (player->getMoney() >= t->getUpgrade()) {
+                        player->addMoney(-(t->getUpgrade()));
+                        t->setLevel(l+1);
+                        p->write("1");
+                    } else { 
+                        p->write("0");
                     }
-                    p->write("1"); //we were successful
                 } else {
                     p->write("0");
                 }
