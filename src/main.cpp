@@ -259,7 +259,7 @@ int main() {
                 auto player_pos = player->getPos();
                 if(lvl1.spotOpen(player_pos.first, player_pos.second)) {
                     p->write("1");
-                    p->wrtie("");
+                    p->write("");
                 } else {
                     Tower* t = getTowerbyPos(player_pos.first, player_pos.second);
                     if(t != nullptr && player == t->getPlayer()) {
@@ -270,7 +270,7 @@ int main() {
                             //rocket
                             p->write("4");
                         }
-                        p->write(t->getUpgrade());
+                        p->write(to_string(t->getUpgrade()));
                     } else {
                         p->write("0");
                         p->write("");
