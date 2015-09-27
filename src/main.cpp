@@ -33,6 +33,7 @@ MsgStruct* readPacket();
 void drawPath(Path*, SDL_Renderer*);
 
 Player* getPlayerbyID(string);
+Tower* getTowerbyPos(int, int);
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
@@ -220,7 +221,18 @@ int main() {
                 if(lvl1.spotOpen(player_pos.first, player_pos.second)) {
                     p->write("1");
                 } else {
-                    p->write("0");
+                    Tower* t = getTowerbyPos(player_pos.first, player_pos.second);
+                    if(t != nullptr && player == t->getPlayer()) {
+                        if(t->getType() == 0) {
+                            //cannon
+                            p->write("3");
+                        } else {
+                            //rocket
+                            p->write("4");
+                        }
+                    } else {
+                        p->write("0");
+                    }
                 }
                 send(p, pID);
             } else if (msgID == 4) {
@@ -646,4 +658,17 @@ int init() {
 
     initFont();
     return 0;
+}
+
+//return
+//3 if cannon
+//4 if rocket
+Tower* getTowerbyPos(int x, int y) {
+    for(auto t : listTower) {
+        auto pos = t->getPosition();
+        if(pos.first == x && pos.second == y) {
+            return t;
+        }
+    }
+    return nullptr;
 }
