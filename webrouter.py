@@ -18,7 +18,11 @@ class Client:
         self.needsConfirmation = True
     
     def handle(self):
-        data = self.socket.readRaw()
+        if (self.socket):
+            try:
+                data = self.socket.readRaw()
+            except:
+                self.socket = None
         if len(data) == 0:
             return
         print("Data:", data)
@@ -37,9 +41,11 @@ class Client:
                     print("No host found.")
         else:
             if self.host.socket:
-                self.host.socket.send(data)
-            else:
-                print("Host's socket is closed.")
+                try:
+                    self.host.socket.send(data)
+                except:
+                    self.host.socket = None
+                    print("Host's socket is closed.")
 
     # This is called to confirm to the client that they have been accepted,
     # after they send us their details.
@@ -80,7 +86,11 @@ class Host:
         return self.pID
 
     def handle(self):
-        self.data += self.socket.readRaw()
+        if (self.socket):
+            try:
+                self.data += self.socket.readRaw()
+            except:
+                self.socket = None
         if len(self.data) == 0:
             return
         print("Host says: "+self.data)
@@ -97,9 +107,11 @@ class Host:
         pID = self.writingTo
         if self.players[pID]:
             if self.players[pID].socket:
-                self.players[pID].socket.send(self.data[2:ind])
-            else:
-                print("Client's socket is closed.")
+                try:
+                    self.players[pID].socket.send(self.data[2:ind])
+                except:
+                    self.players[pID].socket = None;
+                    print("Client's socket closed.")
         else:
             print("Host", self.hostCode," tried to send a messaged to non-existant player", pID)
         self.data = self.data[ind+2:]
