@@ -37,7 +37,7 @@ class Client:
                     print("No host found.")
         else:
             if self.host.socket:
-                self.host.socket.send(self.sID + data)
+                self.host.socket.send(data)
             else:
                 print("Host's socket is closed.")
 
@@ -49,7 +49,7 @@ class Client:
         self.needsConfirmation = False
         self.sID = extend(self.pID, 2)
         self.socket.send("999" + self.sID)
-        self.host.socket.send(self.sID + "998")
+        self.host.socket.send("998" + self.sID)
 
     def becomeHost(self):
         host = Host(self.socket, newHostCode())
@@ -97,7 +97,7 @@ class Host:
         pID = self.writingTo
         if self.players[pID]:
             if self.players[pID].socket:
-                self.players[pID].socket.send(self.data[2:ind].rstrip())
+                self.players[pID].socket.send(self.data[2:ind])
             else:
                 print("Client's socket is closed.")
         else:

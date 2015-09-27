@@ -23,3 +23,7 @@ void Rocket::loadImg(SDL_Renderer* r) {
 	GameObject::loadImg("./res/RocketTower.png", r);
 }
 
+int Rocket::getType(){
+    return 1;
+}
+

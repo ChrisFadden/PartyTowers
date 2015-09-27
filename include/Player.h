@@ -18,7 +18,7 @@ class Player {
   Level* lvl;
 
  public:
-  Player(int, int, int, Level*);  // Constructor
+  Player(int, Level*);  // Constructor
   int getPlayerID();  // Function to get player ID
   void setScore(int);  // Function to set Score
   int getScore();  // Function to get score

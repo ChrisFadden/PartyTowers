@@ -80,16 +80,11 @@ int MsgStruct::readInt() {
     return atoi(read().c_str());
 }
 
-MsgStruct* MsgStruct::fillFromData(bool confirmed) {
+MsgStruct* MsgStruct::fillFromData() {
     string dataS = string(buffer).substr(0, bufferSize);
     int part = 1;
     int offset = 3;
     int ind = 3;
-    if (confirmed) {
-        pID = atoi(dataS.substr(0,2).c_str());
-        ind = 5;
-        offset = 5;
-    }
     while (part <= numParts) {
         string mType = parts[part];
         int mLen = sizes[part];
@@ -102,6 +97,8 @@ MsgStruct* MsgStruct::fillFromData(bool confirmed) {
         }
         part += 1;
     }
+    //cout << "Old buffer size: " << bufferSize << "\n";
+    //cout << "Ind: " << ind << "\n";
     data = dataS.substr(offset, ind-offset);
     //cout << "Our data: " + data + "\n";
     nextPart = 0;
@@ -111,7 +108,7 @@ MsgStruct* MsgStruct::fillFromData(bool confirmed) {
         buffer[count] = buffer[i];
         count++; 
     }
-    bufferSize -= ind;
+    bufferSize -= ind ;
     /*
     cout << "New buffer: " + string(buffer) + "\n";
     cout << "New buffer size: ";

@@ -19,7 +19,7 @@ class MsgStruct {
         bool canHandle(string);
         string read();
         int readInt();
-        MsgStruct* fillFromData(bool);
+        MsgStruct* fillFromData();
         MsgStruct* write(string);
         bool readyToSend();
         string getData(); 

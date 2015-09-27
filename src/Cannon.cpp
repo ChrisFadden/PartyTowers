@@ -23,3 +23,6 @@ void Cannon::loadImg(SDL_Renderer* r) {
 	GameObject::loadImg("./res/Cannon.png", r);
 }
 
+int Cannon::getType(){
+    return 0;
+}
