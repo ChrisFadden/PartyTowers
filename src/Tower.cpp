@@ -30,6 +30,8 @@ int Tower::getUpgrade() { return upgradeCost; }
 void Tower::setSell(int S) { sellValue = S; }
 int Tower::getSell() { return sellValue; }
 
+
+void Tower::setLevel(int Level) {}
 void Tower::setPosition(int X, int Y){
 	x = X;
 	y = Y;

@@ -24,10 +24,15 @@ class Enemy : public GameObject {
 
   bool move();
   void setPath(Path*);
-
+  
+  virtual void setWave(int);
   int wave;
+  
+  void setPower(int);
+  int getPower();
 
  private:
+  int power;
   int x;
   int y;
   int speed;

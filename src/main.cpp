@@ -18,6 +18,7 @@
 #include "Bullet.h"
 #include "Text.h"
 #include <unordered_map>
+#include "TowerBase.h"
 
 using namespace std;
 
@@ -156,8 +157,13 @@ int main() {
         lvl1.addGameObject(floor);
     }
 
+	TowerBase* baseTower = new TowerBase(wave);
+    baseTower->loadImg(renderer);
+    baseTower->setPosition(path->getEnd());
 
-    int enemyRegen = 5 * 60;
+	pair<int, int> base_pos = baseTower->getPosition();
+
+	int enemyRegen = 5 * 60;
     int enemySpawn = 20 * 60;
     game_audio.PlaySound("./res/Wilhelm.wav"); 
     while (running) {
@@ -361,14 +367,21 @@ int main() {
         int tCount = -1;
         for (auto e : listEnemy) {
             tCount += 1;
-            e->move();
             if (!(e->getAlive())) {
                 toRemove.push_back(tCount);
                 continue;
             }
-            pair<int, int> e_pos = e->getPosition();
-            txr.x = e_pos.first;
-            txr.y = e_pos.second;
+			pair<int, int> e_posOld = e->getPosition();
+			e->move();
+			pair<int, int> e_posNew = e->getPosition();
+            txr.x = e_posNew.first;
+            txr.y = e_posNew.second;
+            if (e_posNew.first == base_pos.first & e_posNew.second == base_pos.second) {
+				baseTower->setHealth((baseTower->getHealth()) - e->getPower());
+                txr.x = e_posOld.first;
+				txr.y = e_posOld.second;
+			}
+
             SDL_Texture* tx = e->draw();
             if (!tx) {
                 cout << "Error, tx is NULL";

@@ -5,6 +5,7 @@ Soldier::Soldier(int Wave, int X, int Y) {
 	setPosition(X, Y);
 	setHealth(M_PI + (Wave / 2));
 	setSpeed( 1 + (Wave / 2));
+	setPower(1 + (Wave / 2));
 	setAlive(true);
 	setMoney(50 + (Wave / 2));
 	wave = Wave;
@@ -15,6 +16,7 @@ void Soldier::setWave(int Wave) {
 	setHealth(M_PI + (Wave / 2));
 	setSpeed(1 + (Wave / 2));
 	setMoney(50 + (Wave / 2));
+	setPower(1 + (Wave / 2));
 }
 
 void Soldier::loadImg(SDL_Renderer* r) {

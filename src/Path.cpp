@@ -19,3 +19,8 @@ void Path::addDest(int a, int b) {
 void Path::addDest(pair<int, int> p) {
     path.push_back(p);
 }
+
+pair<int, int> Path::getEnd() {
+	return path.back();
+}
+

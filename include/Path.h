@@ -13,7 +13,7 @@ class Path {
         void addDest(pair<int,int>);
         void addDest(int, int);
         int length();
-
+		pair<int, int> getEnd();
     private:
         vector<pair<int,int>> path;
 };

@@ -39,7 +39,7 @@ class Tower : public GameObject {
   void setPlayer(Player* pin);
   Player* getPlayer();
 
-
+  virtual void setLevel(int);
   int level;
  private:
   int x;

@@ -23,6 +23,11 @@ int Enemy::getMoney() {
     return money;
 }
 
+void Enemy::setWave(int Wave) {}
+
+void Enemy::setPower(int Power) { power = Power; }
+int Enemy::getPower() { return power; }
+
 void Enemy::setPosition(int X, int Y) {
 	x = X;
 	y = Y;

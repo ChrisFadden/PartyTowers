@@ -4,7 +4,7 @@
 
 class TowerBase : public GameObject {
  public:
-  TowerBase(bool, int);  // Default Constructor
+  TowerBase(int);  // Default Constructor
 
   void setHealth(int);  // Function for setting enemny health
   int getHealth();  // Function for getting enemy health
@@ -14,7 +14,14 @@ class TowerBase : public GameObject {
 
   void loadImg(SDL_Renderer*);
   void setWave(int);  // Function for setting level of enemy
+
+  void setPosition(int, int);
+  void setPosition(std::pair<int,int>);
+  std::pair<int, int> getPosition();
+
  private:
+  int x;
+  int y;
   int health;
   bool isAlive;
   int wave;
