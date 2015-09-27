@@ -7,5 +7,6 @@ class Rocket : public Tower {
 		Rocket(int, int, int);
 		void setLevel(int);
 		void loadImg(SDL_Renderer*);
+                int getType();
 };
 #endif

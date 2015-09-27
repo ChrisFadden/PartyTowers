@@ -72,3 +72,8 @@ void Tower::setPlayer(Player* pin) {
 Player* Tower::getPlayer() {
     return p;
 }
+
+int Tower::getType(){
+    return -1;
+}
+
