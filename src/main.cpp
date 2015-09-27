@@ -155,6 +155,7 @@ int main() {
         lvl1.addGameObject(floor);
     }
 
+    int wave = 1;
 	TowerBase* baseTower = new TowerBase(wave);
     baseTower->loadImg(renderer);
     baseTower->setPosition(path->getEnd());
@@ -164,7 +165,6 @@ int main() {
     int enemyRegen = 5 * 60;
     int enemySpawn = 20 * 60;
     game_audio.PlaySound("./res/Wilhelm.wav"); 
-    int wave = 1;
     int enemyRemain = 20;
     while (running) {
         SDL_UpdateWindowSurface(window);
