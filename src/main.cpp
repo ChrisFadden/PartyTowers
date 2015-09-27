@@ -66,7 +66,8 @@ void addTower(int id, int type, SDL_Renderer* r);
 int init();
 
 void gameOver() {
-	drawString("Game Over!!!", 600, 360);
+	 drawString("Game Over!!!", 600, 360);
+	 while (1) {}
 }
 
 
@@ -440,6 +441,11 @@ int main() {
                 cout << "Error, tx is NULL";
             }
             SDL_RenderCopy(renderer, tx, NULL, &txr);
+            
+			txr.x = base_pos.first;
+			txr.y = base_pos.second;
+			SDL_Texture* ttx = baseTower->draw();
+			SDL_RenderCopy(renderer, ttx, NULL, &txr);
         }
 
         txr.w = 16;
