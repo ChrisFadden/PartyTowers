@@ -37,7 +37,7 @@ Player* getPlayerbyID(string);
 Tower* getTowerbyPos(int, int);
 
 const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 720;
+const int SCREEN_HEIGHT = 768;
 
 SDLNet_SocketSet socketSet;
 TCPsocket sock;
@@ -56,7 +56,7 @@ vector<Enemy*> listEnemy;
 vector<GameObject*> listFloors;
 vector<Bullet*> listBullet;
 unordered_map<int, Player*> listPlayers;
-Level lvl1(1280, 720);
+Level lvl1(1280, 768);
 
 // User IO functions to be called from networking code?
 Player* getPlayerbyID(int id);
@@ -76,6 +76,8 @@ int main() {
         std::cout << "SDL_Init: " << SDLNet_GetError() << "\n";
         return -1;
     }
+
+    srand (time(NULL));
 
     cout << "SDL2 loaded.\n";
 
@@ -138,6 +140,50 @@ int main() {
 
     bool confirmed = false;
 
+    int genWidth = SCREEN_WIDTH / 32;
+    int genHeight = SCREEN_HEIGHT / 32;
+
+    int baseX = 8 + rand() % (genWidth-16);
+    int baseY = 5 + rand() % (genHeight-10);
+
+    cout << "(" << baseX << ", " << baseY << ") \n";
+
+    int crX = 0;
+    int crY = 0;
+
+    int success = 0;
+    int want = 4 + (rand() % 3);
+    while (success < want) {
+        crX = rand() % genWidth;
+        crY = rand() % genHeight;
+        int clamp = rand() % 4;
+        if (clamp < 2) {
+            crX = clamp * (genWidth-1);
+        } else {
+            crY = (clamp - 2) * (genHeight-1);
+        }
+        Path* path = new Path();
+        path->addDest(crX * 32, crY * 32);
+        int kx = 1;
+        int ky = 1;
+        if (crX > baseX) { kx = -1; }
+        if (crY > baseY) { ky = -1; }
+        while (crX != baseX || crY != baseY) {
+            crX += kx * (rand() % ((baseX-crX)+kx));
+            crY += ky * (rand() % ((baseY-crY)+ky));
+            path->addDest(crX * 32, crY * 32);
+        }
+        path -> addDest(baseX * 32, baseY * 32);
+        if (path->length() > 10) {
+            success += 1;
+            drawPath(path, renderer);
+            lvl1.addPath(path);
+        } else {
+            delete(path);
+        }
+    }
+
+    /*
     Path* path = new Path();
     path->addDest(0, 0);
     path->addDest(32, 0);
@@ -156,6 +202,7 @@ int main() {
 
     lvl1.addPath(path);
     lvl1.addPath(path2);
+    */
 
     for (auto floor : listFloors) {
         lvl1.addGameObject(floor);
@@ -164,9 +211,10 @@ int main() {
     int wave = 1;
 	TowerBase* baseTower = new TowerBase(wave);
     baseTower->loadImg(renderer);
-    baseTower->setPosition(path->getEnd());
+    baseTower->setPosition(pair<int,int>(baseX*32, baseY*32));
 
 	pair<int, int> base_pos = baseTower->getPosition();
+    cout << "(" << base_pos.first << ", " << base_pos.second << ")\n";
 
     int enemyRegen = 5 * 60;
     int enemySpawn = 20 * 60;
@@ -441,12 +489,13 @@ int main() {
                 cout << "Error, tx is NULL";
             }
             SDL_RenderCopy(renderer, tx, NULL, &txr);
-            
-			txr.x = base_pos.first;
-			txr.y = base_pos.second;
-			SDL_Texture* ttx = baseTower->draw();
-			SDL_RenderCopy(renderer, ttx, NULL, &txr);
-        }
+        }           
+		txr.w = 32;
+        txr.h = 32;
+        txr.x = base_pos.first;
+		txr.y = base_pos.second;
+		SDL_Texture* ttx = baseTower->draw();
+		SDL_RenderCopy(renderer, ttx, NULL, &txr);
 
         txr.w = 16;
         txr.h = 16;

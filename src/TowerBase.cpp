@@ -23,7 +23,7 @@ void TowerBase::setWave(int Wave) {
 }
 
 void TowerBase::setPosition(int X, int Y) {
-	x = Y;
+	x = X;
 	y = Y;
 }
 
