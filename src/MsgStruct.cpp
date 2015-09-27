@@ -56,6 +56,9 @@ bool MsgStruct::canHandle(string dat) {
         }
         part += 1;
     }
+    if (ind > bufferSize) {
+        return false;
+    }
     //cout << "We can handle it!\n";
     return true;
 }
