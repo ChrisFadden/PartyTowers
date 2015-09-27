@@ -28,8 +28,8 @@ int send(string, int);
 MsgStruct* createMsgStruct(int, bool);
 void setupMessages();
 MsgStruct* newPacket(int);
-bool canHandleMsg(bool);
-MsgStruct* readPacket(bool);
+bool canHandleMsg();
+MsgStruct* readPacket();
 void drawPath(Path*, SDL_Renderer*);
 
 Player* getPlayerbyID(string);
@@ -179,9 +179,9 @@ int main() {
             }
         }
 
-        if (canHandleMsg(confirmed)) {
-            MsgStruct* packet = readPacket(confirmed);
-            int pID = packet->getPID();
+        if (canHandleMsg()) {
+            MsgStruct* packet = readPacket();
+            //int pID = packet->getPID();
             int msgID = packet->getMsgID();
 
             if (msgID == 999) {
@@ -190,12 +190,14 @@ int main() {
                 cout << "Room code: " + roomCode + "\n";
             } else if (msgID == 998) {
                 cout << "New player!\n";
+                int pID = packet->readInt();
                 addPlayerbyID(pID, renderer);
                 MsgStruct* p2 = newPacket(5);
                 p2->write(to_string(getPlayerbyID(pID)->getMoney()));
                 send(p2, pID);
 
             } else if (msgID == 2) {
+                int pID = packet->readInt();
                 string dir = packet->read();
                 // We have pID and dir
                 Player* p = getPlayerbyID(pID);
@@ -211,6 +213,7 @@ int main() {
                     cout << "error, direction: " << dir << "\n";
                 }
             } else if (msgID == 3) {
+                int pID = packet->readInt();
                 MsgStruct* p = newPacket(3);
                 // Can I place a tower here? 1 yes, 0 no
                 Player* player = getPlayerbyID(pID);
@@ -226,6 +229,7 @@ int main() {
                 }
                 send(p, pID);
             } else if (msgID == 4) {
+                int pID = packet->readInt();
                 int towerType = packet->readInt();
                 // cout << "Placing a tower.\n";
                 // Attempt to place towerType
@@ -256,6 +260,7 @@ int main() {
                 p2->write(to_string(getPlayerbyID(pID)->getMoney()));
                 send(p2, pID);
             } else if (msgID == 10) {
+                int pID = packet->readInt();
                 string name = packet->read();
                 getPlayerbyID(pID)->setName(name);
             }
@@ -490,16 +495,21 @@ void setupMessages() {
     m1->addChars(4);
 
     MsgStruct* m998 = createMsgStruct(998, false);
+    m998->addChars(2);
 
     MsgStruct* m2 = createMsgStruct(2, false);
+    m2->addChars(2);
     m2->addChars(1);
 
     MsgStruct* m3 = createMsgStruct(3, false);
+    m3->addChars(2);
+    m3->addChars(3);
 
     MsgStruct* o3 = createMsgStruct(3, true);
     o3->addChars(1);
 
     MsgStruct* m4 = createMsgStruct(4, false);
+    m4->addChars(2);
     m4->addChars(2);
 
     MsgStruct* o4 = createMsgStruct(4, true);
@@ -509,10 +519,11 @@ void setupMessages() {
     o5->addString();
 
     MsgStruct* m10 = createMsgStruct(10, false);
+    m10->addChars(2);
     m10->addString();
 }
 
-bool canHandleMsg(bool confirmed) {
+bool canHandleMsg() {
     if (bufferSize < 3) {
         return false;
     }
@@ -522,9 +533,6 @@ bool canHandleMsg(bool confirmed) {
     }
     // cout << "Handling message...\n";
     int offset = 0;
-    if (confirmed) {
-        offset += 2;
-    }
     // cout << data + "\n";
     data = data.substr(offset);
     // cout << data + "\n";
@@ -542,14 +550,11 @@ bool canHandleMsg(bool confirmed) {
     return false;
 }
 
-MsgStruct* readPacket(bool confirmed) {
+MsgStruct* readPacket() {
     string data = string(buffer).substr(0, bufferSize);
     int offset = 0;
-    if (confirmed) {
-        offset += 2;
-    }
     int msgID = atoi(data.substr(offset, 3).c_str());
-    return inMsgStructs[msgID]->fillFromData(confirmed);
+    return inMsgStructs[msgID]->fillFromData();
 }
 
 MsgStruct* createMsgStruct(int msgID, bool outgoing) {

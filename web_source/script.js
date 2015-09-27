@@ -1,6 +1,8 @@
 // This is where we define our messages (similar to an enum)
 var MSG_LOGIN = 999;
 
+var pID = 0;
+
 $(document).ready(function() {
 
     $("#game").hide();
@@ -48,14 +50,18 @@ function setupMessages() {
     i1.addChars(4);
 
     var i2 = createMsgStruct(2, true);
+    i2.addChars(2);
     i2.addChars(1);
 
     var i3 = createMsgStruct(3, true);
+    i3.addChars(2);
 
     var i4 = createMsgStruct(4, true);
     i4.addChars(2);
+    i4.addChars(2);
 
     var i10 = createMsgStruct(10, true);
+    i10.addChars(2);
     i10.addString();
 }
 
@@ -77,31 +83,37 @@ function startConnection() {
 
     $("#upBtn").on("click", function() {
         var packet = newPacket(2);
+        packet.write(pID);
         packet.write("u");
         packet.send();
     });
     $("#downBtn").click(function() {
         var packet = newPacket(2);
+        packet.write(pID);
         packet.write("d");
         packet.send();
     });
     $("#leftBtn").click(function() {
         var packet = newPacket(2);
+        packet.write(pID);
         packet.write("l");
         packet.send();
     });
     $("#rightBtn").click(function() {
         var packet = newPacket(2);
+        packet.write(pID);
         packet.write("r");
         packet.send();
     });
     $("#placeBtn").click(function() {
         var packet = newPacket(3);
+        packet.write(pID);
         packet.send();
     });
 
     $(".buyBtn").click(function() {
         var packet = newPacket(4);
+        packet.write(pID);
         var val = $(this).data("num");
         packet.write(val);
         packet.send();
@@ -118,6 +130,7 @@ function begin() {
 
     var packet = newPacket(10);
     var name = $("#name").val();
+    packet.write(pID);
     packet.write(name);
     packet.send();
 
@@ -146,8 +159,8 @@ function handleNetwork() {
 
     // And handle it!
     if (msgID === MSG_LOGIN) {
-        var pid = packet.read();
-        $("#notify").text("You are client number " + pid);
+        pID = packet.read();
+        $("#notify").text("You are client number " + pID);
         begin();
     } else if (msgID === 3) {
         var t = packet.read();
