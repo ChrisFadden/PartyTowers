@@ -27,7 +27,7 @@ class Enemy : public GameObject {
 
   int wave;
 
- private:
+ protected:
   int x;
   int y;
   int speed;

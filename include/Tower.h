@@ -8,7 +8,7 @@
 class Tower : public GameObject {
  public:
  
-    Tower();
+  Tower();
 
   void setRange(int);  // Set function for range
   int getRange();  // Get function for range
@@ -38,9 +38,8 @@ class Tower : public GameObject {
 
   void setPlayer(Player* pin);
   Player* getPlayer();
-
-
   int level;
+  virtual int getType();
  private:
   int x;
   int y;
@@ -53,6 +52,6 @@ class Tower : public GameObject {
   int timeout;
   int reload;
   Player* p;
-  
+   
 };
 #endif
