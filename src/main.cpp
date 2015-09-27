@@ -499,7 +499,6 @@ void setupMessages() {
 
     MsgStruct* m3 = createMsgStruct(3, false);
     m3->addChars(2);
-    m3->addChars(3);
 
     MsgStruct* o3 = createMsgStruct(3, true);
     o3->addChars(1);
