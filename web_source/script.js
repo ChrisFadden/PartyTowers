@@ -60,6 +60,9 @@ function setupMessages() {
     i4.addChars(2);
     i4.addChars(2);
 
+    var i6 = createMsgStruct(6, true);
+    i4.addChars(2);
+
     var i10 = createMsgStruct(10, true);
     i10.addChars(2);
     i10.addString();
@@ -120,6 +123,13 @@ function startConnection() {
         $("#back").click();
     });
 
+    $(".upgradeBtn").click(function() {
+        var packet = newPacket(6);
+        packet.write(pID);
+        packet.send();
+        $("#back").click();
+    });
+
     // Start the connection!
     $("#notify").text("Connecting...");
     wsconnect("ws://128.61.27.41:8886", onopen, onclose);
@@ -168,8 +178,13 @@ function handleNetwork() {
             $("#buttons").hide();
             $("#towers").show();
             $("#notify").text("Select a tower.");
-        } else {
+        } else if (t == "0"){
             $("#notify").text("Cannot place here.");
+        } else {
+            $("#butons").hide();
+            $("#upgrade").show();
+            $(".tower").hide();
+            $("*[data-num="+t+"]").show();
         }
     } else if (msgID === 4) {
         var t = packet.read();

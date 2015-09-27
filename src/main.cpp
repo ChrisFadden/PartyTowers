@@ -253,6 +253,10 @@ int main() {
                 MsgStruct* p2 = newPacket(5);
                 p2->write(to_string(getPlayerbyID(pID)->getMoney()));
                 send(p2, pID);
+            } else if (msgID == 6) {
+                int pID = packet->readInt();
+                // Attempt to upgrade tower here
+                // Please
             } else if (msgID == 10) {
                 int pID = packet->readInt();
                 string name = packet->read();
@@ -512,6 +516,9 @@ void setupMessages() {
 
     MsgStruct* o5 = createMsgStruct(5, true);
     o5->addString();
+
+    MsgStruct* m6 = createMsgStruct(6, false);
+    m6->addChars(2);
 
     MsgStruct* m10 = createMsgStruct(10, false);
     m10->addChars(2);
