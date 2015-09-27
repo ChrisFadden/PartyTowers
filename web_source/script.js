@@ -205,7 +205,7 @@ function handleNetwork() {
         $("#notify2").text("Points: "+money);
     } else if (msgID === 6) {
         var succ = packet.read();
-        if (t === "1") {
+        if (succ === "1") {
             $("#notify").text("Tower upgraded!");
         } else {
             $("#notify").text("Could not upgrade tower.");
