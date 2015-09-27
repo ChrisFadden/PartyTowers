@@ -18,6 +18,7 @@
 #include "Sound.h"
 #include "Bullet.h"
 #include "Text.h"
+#include "TextureLoader.h"
 #include <unordered_map>
 #include "TowerBase.h"
 
@@ -430,6 +431,28 @@ int main() {
         // test font
         SDL_Rect txr;
         // img size
+        txr.w = 32;
+        txr.h = 32;
+        
+        //draw background image
+        //txr.w = 900;
+        //txr.h = 579;
+        txr.w = SCREEN_WIDTH;
+        txr.h = SCREEN_HEIGHT;
+        txr.x = 0;
+        txr.y = 0;
+        SDL_Texture* bkgtx = TextureLoader::getInstance().loadImg("./res/bkgImg.png", renderer);
+        SDL_RenderCopy(renderer, bkgtx, NULL, &txr);
+        /*txr.x = 900;
+        SDL_RenderCopy(renderer, bkgtx, NULL, &txr);
+        txr.x = 0;
+        txr.y = 579;
+        SDL_RenderCopy(renderer, bkgtx, NULL, &txr);
+        txr.x = 900;
+        SDL_RenderCopy(renderer, bkgtx, NULL, &txr);
+        */
+
+
         txr.w = 32;
         txr.h = 32;
         // For each path item, draw
