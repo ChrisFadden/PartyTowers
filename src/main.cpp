@@ -476,19 +476,26 @@ int main() {
                 toRemove.push_back(tCount);
                 continue;
             }
-			pair<int, int> e_posOld = e->getPosition();
+		//	pair<int, int> e_posOld = e->getPosition();
 			e->move();
 			pair<int, int> e_posNew = e->getPosition();
             txr.x = e_posNew.first;
             txr.y = e_posNew.second;
             if ((e_posNew.first == base_pos.first) && (e_posNew.second == base_pos.second)) {
 				baseTower->setHealth((baseTower->getHealth()) - e->getPower());
+			    if ((e->getAlive())) {
+                	game_audio.PlaySound("./res/Wilhelm.wav");
+                	e->loadImg("./res/Explosion.png",renderer);
+                	toRemove.push_back(tCount);
+                	continue;
+           		 }
+
 				if ((baseTower->getHealth()) <= 0) {
 					gameOver();
                     isGameOver = true;
 				}
-                txr.x = e_posOld.first;
-				txr.y = e_posOld.second;
+          //      txr.x = e_posOld.first;
+			//	txr.y = e_posOld.second;
 			}
 
             SDL_Texture* tx = e->draw();
