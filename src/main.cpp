@@ -362,6 +362,7 @@ int main() {
             tCount += 1;
             e->move();
             if (!(e->getAlive())) {
+                e->loadImg("./res/Explosion.png",renderer);
                 toRemove.push_back(tCount);
                 continue;
             }
@@ -390,7 +391,7 @@ int main() {
                 Enemy* attacked = b->getTarget();
                 attacked->setHealth(attacked->getHealth() - b->getPower());
                 b->getSource()->addMoney(5);
-                if (attacked->getHealth() <= 0 && attacked->getAlive()) {
+                if (attacked->getHealth() <= 0 && attacked->getAlive()) {  
                     cout << "BAM! Gotem!\n";
                     b->getSource()->addMoney(attacked->getMoney());
                     attacked->setAlive(false);
