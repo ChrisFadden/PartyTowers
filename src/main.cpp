@@ -259,6 +259,7 @@ int main() {
                 auto player_pos = player->getPos();
                 if(lvl1.spotOpen(player_pos.first, player_pos.second)) {
                     p->write("1");
+                    p->wrtie("");
                 } else {
                     Tower* t = getTowerbyPos(player_pos.first, player_pos.second);
                     if(t != nullptr && player == t->getPlayer()) {
@@ -269,8 +270,10 @@ int main() {
                             //rocket
                             p->write("4");
                         }
+                        p->write(t->getUpgrade());
                     } else {
                         p->write("0");
+                        p->write("");
                     }
                 }
                 send(p, pID);
@@ -648,6 +651,7 @@ void setupMessages() {
 
     MsgStruct* o3 = createMsgStruct(3, true);
     o3->addChars(1);
+    o3->addString();
 
     MsgStruct* m4 = createMsgStruct(4, false);
     m4->addChars(2);

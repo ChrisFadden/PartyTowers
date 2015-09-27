@@ -38,6 +38,7 @@ function setupMessages() {
     
     var m3 = createMsgStruct(3, false);
     m3.addChars(1);
+    m3.addString();
 
     var m4 = createMsgStruct(4, false);
     m4.addChars(1);
@@ -137,7 +138,7 @@ function startConnection() {
     // Start the connection!
     $("#notify").text("Connecting...");
     //wsconnect("ws://128.61.27.41:8886", onopen, onclose);
-    wsconnect("ws://localhost:8886", onopen, onclose);
+    wsconnect("ws://preston.room409.xyz:8886", onopen, onclose);
 }
 
 function begin() {
@@ -179,6 +180,7 @@ function handleNetwork() {
         begin();
     } else if (msgID === 3) {
         var t = packet.read();
+        var price = packet.read();
         if (t == "1") {
             $("#buttons").hide();
             $("#towers").show();
@@ -191,6 +193,7 @@ function handleNetwork() {
             $("#upgrade").show();
             $(".tower").hide();
             $("*[data-num="+t+"]").show();
+            $(".upgrade_price").text("$"+price);
             $("#notify").text("Upgrade your tower.");
         }
     } else if (msgID === 4) {
