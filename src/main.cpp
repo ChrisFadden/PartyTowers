@@ -68,7 +68,6 @@ int init();
 
 void gameOver() {
 	 drawString("Game Over!!!", 600, 360);
-	 while (1) {}
 }
 
 
@@ -468,6 +467,7 @@ int main() {
         vector<int> toRemove;
 
         int tCount = -1;
+        bool isGameOver = false;
         for (auto e : listEnemy) {
             tCount += 1;
             if (!(e->getAlive())) {
@@ -485,6 +485,7 @@ int main() {
 				baseTower->setHealth((baseTower->getHealth()) - e->getPower());
 				if ((baseTower->getHealth()) <= 0) {
 					gameOver();
+                    isGameOver = true;
 				}
                 txr.x = e_posOld.first;
 				txr.y = e_posOld.second;
@@ -577,6 +578,17 @@ int main() {
         drawString("Room Code: "+roomCode, 16, 16);
 
         SDL_RenderPresent(renderer);
+
+        if(isGameOver) {
+            running = false;
+        }
+    }
+    
+    while (1) {
+        SDL_PollEvent(&e);
+        if (e.type == SDL_QUIT) {
+            break;
+        }
     }
 
     SDL_DestroyWindow(window);
