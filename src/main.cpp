@@ -269,6 +269,31 @@ int main() {
                 int pID = packet->readInt();
                 // Attempt to upgrade tower here
                 // Please
+                Player* player = getPlayerbyID(pID);
+                auto player_pos = player->getPos();
+                Tower* t = getTowerbyPos(player_pos.first, player_pos.second);
+
+                MsgStruct* p = newPacket(6);
+
+                if(t->getPlayer() == player) {
+                    int l;
+                    //To those who made the Tower hierarchy...
+                    //If all of the subclasses have a member (level FOR EXAMPLE!)
+                    //But the base class doesn't have it, it tends to lead to code
+                    //Like the following. This is not good and I will change it
+                    //Sometime soon. Thanks. ~Marcus
+                    if(t->getType() == 0) {
+                        l = ((Cannon*)t)->getLevel();
+                        ((Cannon*)t)->setLevel(l+1);
+                    } else {
+                        l = ((Rocket*)t)->getLevel();
+                        ((Rocket*)t)->setLevel(l+1);
+                    }
+                    p->write("1"); //we were successful
+                } else {
+                    p->write("0");
+                }
+                send(p,pID);
             } else if (msgID == 10) {
                 int pID = packet->readInt();
                 string name = packet->read();
@@ -531,6 +556,9 @@ void setupMessages() {
 
     MsgStruct* m6 = createMsgStruct(6, false);
     m6->addChars(2);
+    
+    MsgStruct* o6 = createMsgStruct(6, true);
+    o6->addChars(1);
 
     MsgStruct* m10 = createMsgStruct(10, false);
     m10->addChars(2);

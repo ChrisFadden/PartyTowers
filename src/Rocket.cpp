@@ -27,3 +27,6 @@ int Rocket::getType(){
     return 1;
 }
 
+int Rocket::getLevel() {
+    return level;
+}

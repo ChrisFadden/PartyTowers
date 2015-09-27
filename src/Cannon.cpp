@@ -26,3 +26,7 @@ void Cannon::loadImg(SDL_Renderer* r) {
 int Cannon::getType(){
     return 0;
 }
+
+int Cannon::getLevel() {
+    return level;
+}
