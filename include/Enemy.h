@@ -31,7 +31,7 @@ class Enemy : public GameObject {
   void setPower(int);
   int getPower();
 
- private:
+ protected:
   int power;
   int x;
   int y;

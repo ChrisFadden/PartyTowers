@@ -13,31 +13,21 @@ Bullet::Bullet(Player* source, Enemy* target, int power) {
     dead = false;
 }
 
-bool Bullet::getDead() {
-    return dead;
-}
+bool Bullet::getDead() { return dead; }
 
-void Bullet::setDead(bool d) {
-    dead = d;
-}
+void Bullet::setDead(bool d) { dead = d; }
 
-Player* Bullet::getSource() {
-    return source;
-}
+Player* Bullet::getSource() { return source; }
 
-int Bullet::getPower() {
-    return power;
-}
+int Bullet::getPower() { return power; }
 
-Enemy* Bullet::getTarget() {
-    return target;
-}
+Enemy* Bullet::getTarget() { return target; }
 
 bool Bullet::move() {
     if (target == nullptr) {
         return true;
     }
-    pair<int,int> targ = target->getPosition();
+    pair<int, int> targ = target->getPosition();
     if (abs(x - targ.first) < 3 && abs(y - targ.second) < 3) {
         return true;
     }
@@ -59,19 +49,24 @@ bool Bullet::move() {
 void Bullet::movePosition(int dx, int dy) {
     x += dx;
     y += dy;
-    setPosition(x,y);
+    setPosition(x, y);
 }
 
-void Bullet::setPosition(pair<int,int> pos) {
+void Bullet::setPosition(pair<int, int> pos) {
     setPosition(pos.first, pos.second);
 }
 
 void Bullet::setPosition(int X, int Y) {
     x = X;
     y = Y;
-    setPos(x,y);
+    setPos(x, y);
 }
 
-void Bullet::loadImg(SDL_Renderer* r) {
-    GameObject::loadImg("./res/Rocket.png", r);
+void Bullet::loadImg(SDL_Renderer* r, int tower) {
+    if (tower == 0)
+        GameObject::loadImg("./res/Cannonball.png", r);
+    else if (tower == 1)
+        GameObject::loadImg("./res/Rocket.png", r);
+    else
+        std::cout << "Not a valid tower designation" << std::endl;
 }

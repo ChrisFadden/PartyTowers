@@ -125,27 +125,27 @@ ul {
 
 .tower-label {
     position: absolute;
-    left: 100px;
-    top: 12px;
+    left: 87px;
+    top: 10px;
     color: #fff;
     font-size: 16pt;
 }
 
 .tower-price {
     position: absolute;
-    left: 100px;
-    top: 39px;
+    left: 90px;
+    top: 35px;
     color: #bbb;
     font-size: 12pt;
 }
 
 .tower-btn {
     position: absolute;
-    left: 200px;
+    left: 180px;
     top: 11px;
 }
 
-#back {
+.back {
     margin-top: 10px;
     margin-left: 20px;
 }

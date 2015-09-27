@@ -19,6 +19,12 @@ void Soldier::setWave(int Wave) {
 	setPower(1 + (Wave / 2));
 }
 
+
+
 void Soldier::loadImg(SDL_Renderer* r) {
-	GameObject::loadImg("./res/Soldier.png", r);
+    if (isAlive) {
+        GameObject::loadImg("./res/Soldier.png", r);
+    } else {
+        GameObject::loadImg("./res/Explosion.png", r);
+    }
 }

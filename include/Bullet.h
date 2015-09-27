@@ -17,7 +17,7 @@ class Bullet : public GameObject {
         void setDead(bool);
         Enemy* getTarget();
         Player* getSource();
-        void loadImg(SDL_Renderer* r);
+        void loadImg(SDL_Renderer* r, int);
         SDL_Texture* getTexture();
 
     private:

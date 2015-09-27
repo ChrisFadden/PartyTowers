@@ -20,5 +20,9 @@ void Cavalry::setWave(int Wave) {
 }
 
 void Cavalry::loadImg(SDL_Renderer* r) {
-	GameObject::loadImg("./res/Cavalry.png", r);
+    if(isAlive){
+        GameObject::loadImg("./res/Cavalry.png", r);
+    } else{
+        GameObject::loadImg("./res/Explosion.png", r);
+    }
 }
