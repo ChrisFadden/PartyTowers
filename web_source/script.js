@@ -202,7 +202,7 @@ function handleNetwork() {
         }
     } else if (msgID === 5) {
         var money = packet.read();
-        $("#notify2").text("Points: "+money);
+        $("#notify2").text("Currency: "+money);
     } else if (msgID === 6) {
         var succ = packet.read();
         if (succ === "1") {
