@@ -64,7 +64,7 @@ void addTower(int id, int type, SDL_Renderer* r);
 int init();
 
 int main() {
-    if (SDL_Init(SDL_INIT_VIDEO) || SDL_Init(SDL_INIT_AUDIO) == -1) {
+    if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) == -1) {
         std::cout << "SDL_Init: " << SDLNet_GetError() << "\n";
         return -1;
     }
@@ -76,8 +76,6 @@ int main() {
     game_audio.PlaySound("./res/BackgroundMusic.wav");
     // The window we'll be rendering to
     SDL_Window* window = NULL;
-    // The surface contained by the window
-    SDL_Surface* screenSurface = NULL;
 
     window = SDL_CreateWindow("Party Towers", SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
@@ -129,7 +127,6 @@ int main() {
     bool running = true;
     int k = 0;
     Uint32 ctime = SDL_GetTicks();
-    int wave = 1;
 
     bool confirmed = false;
 
@@ -158,7 +155,9 @@ int main() {
 
     int enemyRegen = 5 * 60;
     int enemySpawn = 20 * 60;
-    game_audio.PlaySound("./res/Wilhelm.wav");
+    game_audio.PlaySound("./res/Wilhelm.wav"); 
+    int wave = 1;
+    int enemyRemain = 20;
     while (running) {
         SDL_UpdateWindowSurface(window);
 
@@ -218,20 +217,15 @@ int main() {
                 // Can I place a tower here? 1 yes, 0 no
                 Player* player = getPlayerbyID(pID);
                 auto player_pos = player->getPos();
-                if (lvl1.spotOpen(player_pos.first, player_pos.second)) {
-                    // std::cout << "Spot" << player_pos.first <<" "
-                    // <<player_pos.second << "open\n";
+                if(lvl1.spotOpen(player_pos.first, player_pos.second)) {
                     p->write("1");
                 } else {
-                    // std::cout << "Spot" << player_pos.first <<" "
-                    // <<player_pos.second << "closed\n";
                     p->write("0");
                 }
                 send(p, pID);
             } else if (msgID == 4) {
                 int pID = packet->readInt();
                 int towerType = packet->readInt();
-                // cout << "Placing a tower.\n";
                 // Attempt to place towerType
                 // here
                 string out = "1";
@@ -268,15 +262,19 @@ int main() {
 
         k += 1;
         if (SDL_GetTicks() - ctime > 1000) {
-            // cout << k;
             k = 0;
             ctime = SDL_GetTicks();
-            // cout << "\n";
         }
 
-        if (enemySpawn < 0) {
-            // cout << "New enemy\n";
-            Soldier* soldier = new Soldier(1, 0, 0);
+        if (enemyRemain <= 0) {
+            //Increment wave, refresh counters.
+            std::cout << "Wave " << wave+1 << " incoming.\n";
+            wave++;
+            enemyRemain = 20;
+            enemySpawn = 20*60;
+        } else if (enemySpawn < 0) {
+            Soldier* soldier = new Soldier(wave, 0, 0);
+            soldier->setWave(wave);
             soldier->loadImg(renderer);
             listEnemy.push_back(soldier);
             int num = rand() % lvl1.getNumPaths();
@@ -315,8 +313,7 @@ int main() {
                 }
             }  // end of enemy loop
             if (attacked) {
-                // cout << "Hit the enemy!\n";
-                Bullet* bullet =
+               Bullet* bullet =
                     new Bullet(t->getPlayer(), attacked, t->getPower());
                 bullet->setPosition(t->getPosition()); 
                 bullet->loadImg(renderer,t->getType());
@@ -367,6 +364,7 @@ int main() {
             tCount += 1;
             e->move();
             if (!(e->getAlive())) {
+                game_audio.PlaySound("./res/Wilhelm.wav");
                 e->loadImg("./res/Explosion.png",renderer);
                 toRemove.push_back(tCount);
                 continue;
@@ -398,6 +396,7 @@ int main() {
                 b->getSource()->addMoney(5);
                 if (attacked->getHealth() <= 0 && attacked->getAlive()) {  
                     cout << "BAM! Gotem!\n";
+                    enemyRemain--;
                     b->getSource()->addMoney(attacked->getMoney());
                     attacked->setAlive(false);
                     for (auto ee : listBullet) {
@@ -451,11 +450,9 @@ int main() {
             listBullet.erase(listBullet.begin() + i);
         }
 
-        // SDL_RenderCopy(renderer, t, NULL, &txr);
         SDL_RenderPresent(renderer);
     }
 
-    SDL_FreeSurface(screenSurface);
     SDL_DestroyWindow(window);
 
     SDLNet_TCP_Close(sock);
@@ -616,20 +613,17 @@ void addTower(int id, int type, SDL_Renderer* r) {
     std::cout << "x,y " << x << "," << y << "\n";
     Tower* t;
     std::cout << type << "\n";
-    if (type == 1) {
-        // std::cout << "MAKING A CANNON!!\n";
-        Cannon* cannon = new Cannon(x, y, 1);
+    if(type == 1) {
+        Cannon* cannon = new Cannon(x,y,1);
         cannon->loadImg(r);
         t = cannon;
     } else {
-        // std::cout << "MAKING A ROCKET!!\n";
-        Rocket* rocket = new Rocket(x, y, 1);
+        Rocket* rocket = new Rocket(x,y,1);
         rocket->loadImg(r);
         t = rocket;
     }
 
-    if (!lvl1.spotOpen(x, y)) {
-        // std::cout << "Position wasn't open!\n";
+    if(!lvl1.spotOpen(x, y)) {
         delete t;
         return;
     }
