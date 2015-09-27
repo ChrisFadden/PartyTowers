@@ -136,8 +136,8 @@ function startConnection() {
 
     // Start the connection!
     $("#notify").text("Connecting...");
-    wsconnect("ws://128.61.27.41:8886", onopen, onclose);
-    //wsconnect("ws://localhost:8886", onopen, onclose);
+    //wsconnect("ws://128.61.27.41:8886", onopen, onclose);
+    wsconnect("ws://localhost:8886", onopen, onclose);
 }
 
 function begin() {
@@ -202,7 +202,7 @@ function handleNetwork() {
         }
     } else if (msgID === 5) {
         var money = packet.read();
-        $("#notify2").text("Points: "+money);
+        $("#notify2").text("Currency: "+money);
     } else if (msgID === 6) {
         var succ = packet.read();
         if (succ === "1") {
