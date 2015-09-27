@@ -65,6 +65,11 @@ void addTower(int id, int type, SDL_Renderer* r);
 
 int init();
 
+void gameOver() {
+	drawString("Game Over!!!", 600, 360);
+}
+
+
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) == -1) {
         std::cout << "SDL_Init: " << SDLNet_GetError() << "\n";
@@ -423,6 +428,9 @@ int main() {
             txr.y = e_posNew.second;
             if (e_posNew.first == base_pos.first & e_posNew.second == base_pos.second) {
 				baseTower->setHealth((baseTower->getHealth()) - e->getPower());
+				if ((baseTower->getHealth()) <= 0) {
+					gameOver();
+				}
                 txr.x = e_posOld.first;
 				txr.y = e_posOld.second;
 			}
