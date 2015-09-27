@@ -593,7 +593,7 @@ int main() {
         }
     }
     
-    while (isGameOver) {
+    while (1) {
         SDL_PollEvent(&e);
         if (e.type == SDL_QUIT) {
             break;
