@@ -182,6 +182,7 @@ function handleNetwork() {
         if (t == "1") {
             $("#buttons").hide();
             $("#towers").show();
+            $(".tower").show();
             $("#notify").text("Select a tower.");
         } else if (t == "0"){
             $("#notify").text("Cannot place here.");
@@ -190,6 +191,7 @@ function handleNetwork() {
             $("#upgrade").show();
             $(".tower").hide();
             $("*[data-num="+t+"]").show();
+            $("#notify").text("Upgrade your tower.");
         }
     } else if (msgID === 4) {
         var t = packet.read();
