@@ -12,8 +12,9 @@ $(document).ready(function() {
 
     $("#room").val("");
 
-    $("#back").click(function() {
+    $(".back").click(function() {
         $("#towers").hide();
+        $("#upgrade").hide();
         $("#buttons").show();
     });
 
@@ -44,6 +45,9 @@ function setupMessages() {
     var m5 = createMsgStruct(5, false);
     m5.addString();
 
+    var m6 = createMsgStruct(6, false);
+    m6.addChars(1);
+
     // Outgoing MSG_LOGIN
     var i1 = createMsgStruct(MSG_LOGIN, true);
     // This packet sends a string (our name) to the server
@@ -61,7 +65,7 @@ function setupMessages() {
     i4.addChars(2);
 
     var i6 = createMsgStruct(6, true);
-    i4.addChars(2);
+    i6.addChars(2);
 
     var i10 = createMsgStruct(10, true);
     i10.addChars(2);
@@ -120,14 +124,14 @@ function startConnection() {
         var val = $(this).data("num");
         packet.write(val);
         packet.send();
-        $("#back").click();
+        $(".back").click();
     });
 
     $(".upgradeBtn").click(function() {
         var packet = newPacket(6);
         packet.write(pID);
         packet.send();
-        $("#back").click();
+        $(".back").click();
     });
 
     // Start the connection!
@@ -151,6 +155,7 @@ function begin() {
     $("#notify").text("Connected!");
     $("#game").show();
     $("#towers").hide();
+    $("#upgrade").hide();
 }
 
 // This function handles incoming packets
@@ -181,7 +186,7 @@ function handleNetwork() {
         } else if (t == "0"){
             $("#notify").text("Cannot place here.");
         } else {
-            $("#butons").hide();
+            $("#buttons").hide();
             $("#upgrade").show();
             $(".tower").hide();
             $("*[data-num="+t+"]").show();
@@ -196,6 +201,13 @@ function handleNetwork() {
     } else if (msgID === 5) {
         var money = packet.read();
         $("#notify2").text("Points: "+money);
+    } else if (msgID === 6) {
+        var succ = packet.read();
+        if (t === "1") {
+            $("#notify").text("Tower upgraded!");
+        } else {
+            $("#notify").text("Could not upgrade tower.");
+        }
     }
 }
 
