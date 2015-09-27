@@ -347,15 +347,19 @@ int main() {
                     if(t->getType() == 0) {
                         l = ((Cannon*)t)->getLevel();
                         ((Cannon*)t)->setLevel(l+1);
+						player->addMoney(-((Cannon*)t)->getUpgrade());
                     } else {
                         l = ((Rocket*)t)->getLevel();
                         ((Rocket*)t)->setLevel(l+1);
+						player->addMoney(-((Rocket*)t)->getUpgrade());
                     }
                     p->write("1"); //we were successful
                 } else {
                     p->write("0");
                 }
                 send(p,pID);
+				MsgStruct* p = newPacket(5);
+				p->write(player->getMoney());
             } else if (msgID == 10) {
                 int pID = packet->readInt();
                 string name = packet->read();
@@ -498,7 +502,7 @@ int main() {
 			pair<int, int> e_posNew = e->getPosition();
             txr.x = e_posNew.first;
             txr.y = e_posNew.second;
-            if (e_posNew.first == base_pos.first & e_posNew.second == base_pos.second) {
+            if ((e_posNew.first == base_pos.first) && (e_posNew.second == base_pos.second)) {
 				baseTower->setHealth((baseTower->getHealth()) - e->getPower());
 				if ((baseTower->getHealth()) <= 0) {
 					gameOver();
@@ -512,13 +516,13 @@ int main() {
                 cout << "Error, tx is NULL";
             }
             SDL_RenderCopy(renderer, tx, NULL, &txr);
-        }           
-		txr.w = 32;
-        txr.h = 32;
+            
+        }
         txr.x = base_pos.first;
 		txr.y = base_pos.second;
 		SDL_Texture* ttx = baseTower->draw();
 		SDL_RenderCopy(renderer, ttx, NULL, &txr);
+
 
         txr.w = 16;
         txr.h = 16;

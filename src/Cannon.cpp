@@ -4,8 +4,8 @@ Cannon::Cannon(int X, int Y, int Level) {
 	setPosition(X, Y);
 	setSpeed(Level * 1);
 	setPower(Level * 1);
-	setCost(5);
-	setUpgrade(5);
+	setCost(50);
+	setUpgrade(50 + ((50 * Level)/ 2));
 	setSell(0.5 * Level * 5);
     setRange(96);
     setTimeout(120);
