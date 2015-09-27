@@ -100,10 +100,10 @@ int main() {
 
     IPaddress ip;
 
-    if (SDLNet_ResolveHost(&ip, "localhost", atoi("8886")) < 0) {
+    if (SDLNet_ResolveHost(&ip, "preston.room409.xyz", atoi("8886")) < 0) {
         fprintf(stderr, "SDLNet_ResolveHost: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
-    }
+    } 
 
     if (!(sock = SDLNet_TCP_Open(&ip))) {
         fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
@@ -143,7 +143,7 @@ int main() {
     int genWidth = SCREEN_WIDTH / 32;
     int genHeight = SCREEN_HEIGHT / 32;
 
-    int baseX = 8 + rand() % (genWidth-16);
+    int baseX = 2 + rand() % (genWidth-4);
     int baseY = 5 + rand() % (genHeight-10);
 
     cout << "(" << baseX << ", " << baseY << ") \n";
@@ -582,7 +582,8 @@ int main() {
             listBullet.erase(listBullet.begin() + i);
         }
 
-        drawString("Room Code: "+roomCode, 16, 16);
+        drawString("Host Code: "+roomCode, 16, 16);
+        drawString("http://preston.room409.xyz:8001", 16, 48);
 
         SDL_RenderPresent(renderer);
 
