@@ -184,27 +184,6 @@ int main() {
         }
     }
 
-    /*
-    Path* path = new Path();
-    path->addDest(0, 0);
-    path->addDest(32, 0);
-    path->addDest(32, 128);
-    path->addDest(64, 128);
-    path->addDest(64, 512);
-    drawPath(path, renderer);
-
-    Path* path2 = new Path();
-    path2->addDest(1280 - 32, 0);
-    path2->addDest(1280 - 32, 128);
-    path2->addDest(1280 - 512, 128);
-    path2->addDest(1280 - 512, 512);
-    path2->addDest(64, 512);
-    drawPath(path2, renderer);
-
-    lvl1.addPath(path);
-    lvl1.addPath(path2);
-    */
-
     for (auto floor : listFloors) {
         lvl1.addGameObject(floor);
     }
@@ -215,7 +194,6 @@ int main() {
     baseTower->setPosition(pair<int,int>(baseX*32, baseY*32));
 
 	pair<int, int> base_pos = baseTower->getPosition();
-    cout << "(" << base_pos.first << ", " << base_pos.second << ")\n";
 
     int enemyRegen = 5 * 60;
     int enemySpawn = 20 * 60;
@@ -358,8 +336,9 @@ int main() {
                     p->write("0");
                 }
                 send(p,pID);
-				MsgStruct* p = newPacket(5);
-				p->write(player->getMoney());
+				MsgStruct* p2 = newPacket(5);
+				p2->write(to_string(player->getMoney()));
+                send(p2, pID);
             } else if (msgID == 10) {
                 int pID = packet->readInt();
                 string name = packet->read();
@@ -594,6 +573,8 @@ int main() {
             delete (listBullet.at(i));
             listBullet.erase(listBullet.begin() + i);
         }
+
+        drawString("Room Code: "+roomCode, 16, 16);
 
         SDL_RenderPresent(renderer);
     }
