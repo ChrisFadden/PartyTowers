@@ -362,6 +362,7 @@ int main() {
             tCount += 1;
             e->move();
             if (!(e->getAlive())) {
+                game_audio.PlaySound("./res/Wilhelm.wav");
                 e->loadImg("./res/Explosion.png",renderer);
                 toRemove.push_back(tCount);
                 continue;
