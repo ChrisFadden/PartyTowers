@@ -323,12 +323,20 @@ int main() {
                     //Sometime soon. Thanks. ~Marcus
                     if(t->getType() == 0) {
                         l = ((Cannon*)t)->getLevel();
-                        ((Cannon*)t)->setLevel(l+1);
-						player->addMoney(-((Cannon*)t)->getUpgrade());
+						if (((player->getMoney()) < (((Cannon*)t)->getUpgrade()))) {
+                        	((Cannon*)t)->setLevel(l+1);
+							(player->addMoney(-((Cannon*)t)->getUpgrade()));
+						} else { 
+							p->write("0");
+						}
                     } else {
                         l = ((Rocket*)t)->getLevel();
-                        ((Rocket*)t)->setLevel(l+1);
-						player->addMoney(-((Rocket*)t)->getUpgrade());
+						if (((player->getMoney()) < (((Rocket*)t)->getUpgrade()))) {
+                        	((Rocket*)t)->setLevel(l+1);
+							(player->addMoney(-((Rocket*)t)->getUpgrade()));
+						} else { 
+							p->write("0");
+						}
                     }
                     p->write("1"); //we were successful
                 } else {
