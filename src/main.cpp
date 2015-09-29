@@ -100,7 +100,7 @@ int main() {
 
     IPaddress ip;
 
-    if (SDLNet_ResolveHost(&ip, "localhost", atoi("8886")) < 0) {
+    if (SDLNet_ResolveHost(&ip, "preston.room409.xyz", atoi("8886")) < 0) {
         fprintf(stderr, "SDLNet_ResolveHost: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     } 
