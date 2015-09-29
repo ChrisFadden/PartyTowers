@@ -100,7 +100,7 @@ int main() {
 
     IPaddress ip;
 
-    if (SDLNet_ResolveHost(&ip, "preston.room409.xyz", atoi("8886")) < 0) {
+    if (SDLNet_ResolveHost(&ip, "localhost", atoi("8886")) < 0) {
         fprintf(stderr, "SDLNet_ResolveHost: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     } 
@@ -210,12 +210,13 @@ int main() {
         int ready = SDLNet_CheckSockets(socketSet, 15);
         if (ready > 0 && SDLNet_SocketReady(sock)) {
             int s = SDLNet_TCP_Recv(sock, tempBuffer, 512);
-            for (int i = 0; i < s - 2; i++) {
-                buffer[bufferSize + i] = tempBuffer[i + 2];
+            for (int i = 0; i < s; i++) {
+                buffer[bufferSize + i] = tempBuffer[i];
             }
             if (s > 1) {
-                bufferSize += s - 2;
+                bufferSize += s;
             }
+            cout << "Buffer: " << buffer << "\n";
         }
 
         if (canHandleMsg()) {
